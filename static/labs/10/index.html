@@ -3,89 +3,917 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSS Lab 10</title>
+    <title>TechBlog - Latest News in Technology</title>
     <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #4b5563;
+            --accent-color: #f97316;
+            --background-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 2rem;
-            background-color: #f4f7fa;
-            color: #333;
+            background-color: var(--background-color);
+            color: var(--text-color);
             line-height: 1.6;
         }
         
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
         .container {
-            max-width: 800px;
+            max-width: 1100px;
             margin: 0 auto;
-            background-color: white;
-            padding: 2rem;
+            padding: 0 1.5rem;
+        }
+        
+        .header {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo svg {
+            width: 28px;
+            height: 28px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .search-bar {
+            display: flex;
+            margin-left: 1rem;
+        }
+        
+        .search-input {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px 0 0 4px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+        }
+        
+        .search-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            padding: 0 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .search-button:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .main {
+            padding: 2rem 0;
+        }
+        
+        .article {
+            background-color: var(--card-bg);
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
         }
         
-        h1 {
-            color: #3c66c4;
-            margin-top: 0;
+        .article-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
         }
         
-        p {
+        .article-category {
+            display: inline-block;
+            background-color: #e5e7eb;
+            color: var(--secondary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+        
+        .article-title {
+            font-size: 1.75rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-color);
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            gap: 1.5rem;
+        }
+        
+        .article-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        .article-date, .article-views {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .article-date svg, .article-views svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--text-light);
+        }
+        
+        .article-content {
+            padding: 1.5rem;
+        }
+        
+        .article-text {
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+        }
+        
+        .article-text p {
+            margin-bottom: 1rem;
+        }
+        
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
             margin-bottom: 1.5rem;
         }
         
-        .notice {
-            background-color: #fff3cd;
+        .article-tag {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            font-size: 0.8rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+        }
+        
+        .article-actions {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .action-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .action-button:hover {
+            color: var(--primary-color);
+        }
+        
+        .action-button svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .share-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            background-color: var(--secondary-color);
+            transition: background-color 0.3s;
+        }
+        
+        .share-button.twitter {
+            background-color: #1da1f2;
+        }
+        
+        .share-button.facebook {
+            background-color: #1877f2;
+        }
+        
+        .share-button.linkedin {
+            background-color: #0a66c2;
+        }
+        
+        .share-button svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+        
+        .comments-section {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .comments-title {
+            font-size: 1.25rem;
+            color: var(--text-color);
+        }
+        
+        .comments-sort {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .sort-options {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        
+        .comment-form {
+            margin-bottom: 2rem;
+        }
+        
+        .comment-input {
+            width: 100%;
             padding: 1rem;
-            border-left: 4px solid #ffc107;
-            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .comment-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .comment-form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .comment-policy {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1.25rem;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: none;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .comment-list {
+            list-style: none;
+        }
+        
+        .comment {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .comment:last-child {
+            border-bottom: none;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .comment-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--secondary-color);
+            font-size: 1rem;
+        }
+        
+        .comment-meta {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .comment-name {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .comment-time {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .comment-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .comment-vote {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .vote-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1;
+        }
+        
+        .vote-button svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--text-light);
+        }
+        
+        .vote-button:hover svg {
+            fill: var(--primary-color);
+        }
+        
+        .vote-count {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .comment-reply {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .comment-reply:hover {
+            color: var(--primary-color);
+        }
+        
+        .comment-body {
+            margin-left: 3.5rem;
+            color: var(--text-color);
+        }
+        
+        .comment-text {
+            margin-bottom: 0.5rem;
+        }
+        
+        .comment-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 0.75rem;
+        }
+        
+        .load-more {
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .load-more-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.5rem 1.25rem;
+            color: var(--text-color);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .load-more-btn:hover {
+            background-color: var(--background-color);
+            border-color: var(--text-light);
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-bar {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .search-input {
+                flex: 1;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .comment-body {
+                margin-left: 0;
+                margin-top: 0.75rem;
+            }
+            
+            .comment-form-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>XSS Lab #10</h1>
-        <div class="notice">
-            <p>This is a placeholder for lab #10: Reflected XSS via Open Redirect</p>
-            <p>To solve this lab, you'll need to insert code that displays an alert with the text "Xpwned".</p>
+    <header class="header">
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
+                </svg>
+                TechBlog
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Technology</a></li>
+                <li><a href="#">Business</a></li>
+                <li><a href="#">Development</a></li>
+                <li><a href="#">AI</a></li>
+            </ul>
+            
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search articles...">
+                <button class="search-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+            </div>
         </div>
-        
-        <div id="lab-content">
-            <p>Lab content placeholder. For a complete implementation, replace this with the actual lab content.</p>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <article class="article">
+                <div class="article-header">
+                    <span class="article-category">Technology</span>
+                    <h1 class="article-title">The Future of Web Development: Trends to Watch in 2025</h1>
+                    
+                    <div class="article-meta">
+                        <div class="article-author">
+                            <div class="author-avatar">JD</div>
+                            <span>John Doe</span>
+                        </div>
+                        
+                        <div class="article-date">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zM5 7V5h14v2H5zm2 4h10v2H7v-2zm0 4h7v2H7v-2z"/>
+                            </svg>
+                            <span>April 15, 2025</span>
+                        </div>
+                        
+                        <div class="article-views">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                            </svg>
+                            <span>1,542 views</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="article-content">
+                    <div class="article-text">
+                        <p>The web development landscape continues to evolve at a rapid pace. As we move into 2025, several emerging trends are set to reshape how developers build web applications and how users interact with them. In this article, we'll explore the most important developments to watch in the coming year.</p>
+                        
+                        <p>One of the most significant shifts in recent years has been the rise of AI-assisted development tools. These tools now handle everything from code completion to debugging and even generating entire components based on natural language descriptions. The productivity gains have been substantial, allowing developers to focus more on architecture and user experience rather than repetitive coding tasks.</p>
+                        
+                        <p>WebAssembly (Wasm) continues to gain traction, enabling high-performance code to run in browsers. With the introduction of the component model and improved tooling, Wasm is becoming accessible to more developers and expanding beyond its original performance-focused use cases into areas like secure sandboxing and cross-platform application development.</p>
+                        
+                        <p>The way we style web applications is also changing. CSS has evolved dramatically with features like container queries, cascade layers, and the :has() selector enabling more sophisticated and maintainable styling systems. Combined with the growing adoption of utility-first frameworks and design tokens, we're seeing a convergence between development and design workflows.</p>
+                        
+                        <p>Authentication and identity management are becoming increasingly sophisticated. Passwordless authentication methods like passkeys are becoming standardized across platforms, providing better security and usability. Meanwhile, decentralized identity solutions are offering new approaches to privacy and data ownership.</p>
+                        
+                        <p>Edge computing continues to blur the line between frontend and backend development. With mature edge runtime environments, developers can now deploy code that runs close to users, reducing latency and enabling new types of applications. The serverless paradigm has evolved to embrace this edge-first approach.</p>
+                    </div>
+                    
+                    <div class="article-tags">
+                        <span class="article-tag">WebDev</span>
+                        <span class="article-tag">Technology</span>
+                        <span class="article-tag">WebAssembly</span>
+                        <span class="article-tag">CSS</span>
+                        <span class="article-tag">Edge Computing</span>
+                    </div>
+                    
+                    <div class="article-actions">
+                        <div class="action-buttons">
+                            <button class="action-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                </svg>
+                                <span>Like</span>
+                            </button>
+                            
+                            <button class="action-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/>
+                                </svg>
+                                <span>Comment</span>
+                            </button>
+                            
+                            <button class="action-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                                </svg>
+                                <span>Save</span>
+                            </button>
+                        </div>
+                        
+                        <div class="share-buttons">
+                            <a href="#" class="share-button twitter">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+                                </svg>
+                            </a>
+                            
+                            <a href="#" class="share-button facebook">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                                </svg>
+                            </a>
+                            
+                            <a href="#" class="share-button linkedin">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                                    <rect x="2" y="9" width="4" height="12"/>
+                                    <circle cx="4" cy="4" r="2"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comments-section">
+                    <div class="comments-header">
+                        <h2 class="comments-title">Comments (6)</h2>
+                        
+                        <div class="comments-sort">
+                            <span>Sort by:</span>
+                            <select class="sort-options">
+                                <option value="newest">Newest</option>
+                                <option value="top">Top rated</option>
+                                <option value="oldest">Oldest</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="comment-form">
+                        <textarea class="comment-input" id="comment-input" placeholder="Share your thoughts..."></textarea>
+                        
+                        <div class="comment-form-footer">
+                            <div class="comment-policy">
+                                Be respectful and constructive in your comments.
+                            </div>
+                            
+                            <button class="btn btn-primary" id="post-comment">Post Comment</button>
+                        </div>
+                    </div>
+                    
+                    <ul class="comment-list" id="comment-list">
+                        <!-- Comments will be added here by JavaScript -->
+                    </ul>
+                    
+                    <div class="load-more">
+                        <button class="load-more-btn">Load More Comments</button>
+                    </div>
+                </div>
+            </article>
         </div>
-    </div>
+    </main>
 
     <script>
-        // Minimal success detection script for the lab
-        window.addEventListener('error', function(e) {
-            if (e.message && e.message.includes('Xpwned')) {
+        document.addEventListener('DOMContentLoaded', function() {
+            const commentList = document.getElementById('comment-list');
+            const commentInput = document.getElementById('comment-input');
+            const postCommentButton = document.getElementById('post-comment');
+            
+            // Sample comments for the initial load
+            const sampleComments = [
+                {
+                    id: 1,
+                    name: 'Alice Johnson',
+                    initials: 'AJ',
+                    time: '3 hours ago',
+                    content: 'Great article! I\'m particularly excited about the advancements in WebAssembly. It\'s going to open up so many possibilities for web applications.',
+                    votes: 8
+                },
+                {
+                    id: 2,
+                    name: 'Bob Smith',
+                    initials: 'BS',
+                    time: '2 hours ago',
+                    content: 'I think you overlooked the importance of progressive web apps (PWAs). They\'re becoming increasingly sophisticated and blurring the line between web and native apps.',
+                    votes: 5
+                },
+                {
+                    id: 3,
+                    name: 'Carol Williams',
+                    initials: 'CW',
+                    time: '1 hour ago',
+                    content: 'What about accessibility? I hope that with all these advancements, developers don\'t forget about making websites usable for everyone.',
+                    votes: 12
+                }
+            ];
+            
+            // Function to render a comment
+            function renderComment(comment) {
+                const commentElement = document.createElement('li');
+                commentElement.className = 'comment';
+                commentElement.dataset.id = comment.id;
+                
+                commentElement.innerHTML = `
+                    <div class="comment-header">
+                        <div class="comment-author">
+                            <div class="comment-avatar">${comment.initials}</div>
+                            <div class="comment-meta">
+                                <div class="comment-name">${comment.name}</div>
+                                <div class="comment-time">${comment.time}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="comment-actions">
+                            <div class="comment-vote">
+                                <button class="vote-button vote-up">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M7 14l5-5 5 5z"/>
+                                    </svg>
+                                </button>
+                                <span class="vote-count">${comment.votes}</span>
+                                <button class="vote-button vote-down">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M7 10l5 5 5-5z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <button class="comment-reply">Reply</button>
+                        </div>
+                    </div>
+                    
+                    <div class="comment-body">
+                        <div class="comment-text">${comment.content}</div>
+                    </div>
+                `;
+                
+                return commentElement;
+            }
+            
+            // Initialize comments
+            function loadComments() {
+                commentList.innerHTML = '';
+                sampleComments.forEach(comment => {
+                    commentList.appendChild(renderComment(comment));
+                });
+            }
+            
+            // Function to add a new comment
+            function addComment() {
+                const commentText = commentInput.value.trim();
+                if (!commentText) return;
+                
+                // Create a new comment object
+                const newComment = {
+                    id: Date.now(), // Use timestamp as unique ID
+                    name: 'You',
+                    initials: 'YO',
+                    time: 'Just now',
+                    content: commentText, // This is vulnerable to XSS!
+                    votes: 0
+                };
+                
+                // Add the comment to the list
+                commentList.insertBefore(renderComment(newComment), commentList.firstChild);
+                
+                // Clear the input
+                commentInput.value = '';
+                
+                // Update the comment count
+                const commentsTitle = document.querySelector('.comments-title');
+                const count = parseInt(commentsTitle.textContent.match(/\d+/)[0]) + 1;
+                commentsTitle.textContent = `Comments (${count})`;
+                
+                // Check if this comment contains the XSS payload
+                checkForXssPayload(newComment.content);
+            }
+            
+            // Post comment button click handler
+            postCommentButton.addEventListener('click', addComment);
+            
+            // Allow submitting with Enter key (Shift+Enter for new line)
+            commentInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    addComment();
+                }
+            });
+            
+            // Function to check for the XSS payload
+            function checkForXssPayload(content) {
+                if (content.includes('Xpwned')) {
+                    setTimeout(() => {
+                        // Check if XSS was successful
+                        const scripts = document.querySelectorAll('script');
+                        for (const script of scripts) {
+                            if (script.textContent.includes('Xpwned')) {
+                                labCompleted();
+                                return;
+                            }
+                        }
+                        
+                        // Check for other evidence of XSS
+                        try {
+                            // If alert was called with Xpwned
+                            const originalAlert = window.alert;
+                            window.alert = function(message) {
+                                if (message && message.toString().includes('Xpwned')) {
+                                    labCompleted();
+                                }
+                                return originalAlert.apply(this, arguments);
+                            };
+                        } catch (e) {
+                            if (e.message && e.message.includes('Xpwned')) {
+                                labCompleted();
+                            }
+                        }
+                    }, 500);
+                }
+            }
+            
+            // Function to notify parent that lab was completed
+            function labCompleted() {
                 window.parent.postMessage({
                     type: 'LAB_COMPLETED',
                     labId: '10'
                 }, '*');
             }
-        });
-        
-        // Success detection via DOM mutations
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                    for (let i = 0; i < mutation.addedNodes.length; i++) {
-                        const node = mutation.addedNodes[i];
-                        if (node.nodeType === 1 && node.outerHTML && 
-                            node.outerHTML.includes('alert') && 
-                            node.outerHTML.includes('Xpwned')) {
-                            window.parent.postMessage({
-                                type: 'LAB_COMPLETED',
-                                labId: '10'
-                            }, '*');
+            
+            // Set up a MutationObserver to detect DOM changes that might indicate XSS
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                        for (let i = 0; i < mutation.addedNodes.length; i++) {
+                            const node = mutation.addedNodes[i];
+                            if (node.nodeType === 1 && node.outerHTML && 
+                                (node.outerHTML.includes('alert') || node.outerHTML.includes('script')) && 
+                                node.outerHTML.includes('Xpwned')) {
+                                labCompleted();
+                                break;
+                            }
                         }
                     }
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+            // Listen for error events
+            window.addEventListener('error', function(e) {
+                if (e.message && e.message.includes('Xpwned')) {
+                    labCompleted();
                 }
             });
-        });
-        
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
+            
+            // Load initial comments
+            loadComments();
         });
     </script>
 </body>

@@ -3,89 +3,459 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSS Lab 9</title>
+    <title>SecureBank - Login</title>
     <style>
+        :root {
+            --primary-color: #0052cc;
+            --secondary-color: #00875a;
+            --danger-color: #de350b;
+            --warning-color: #ff991f;
+            --info-color: #0065ff;
+            --text-color: #172b4d;
+            --text-light: #6b778c;
+            --background-color: #f4f5f7;
+            --border-color: #dfe1e6;
+            --shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 2rem;
-            background-color: #f4f7fa;
-            color: #333;
+            background-color: var(--background-color);
+            color: var(--text-color);
             line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
         }
         
         .container {
-            max-width: 800px;
+            width: 90%;
+            max-width: 1200px;
             margin: 0 auto;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .logo svg {
+            width: 32px;
+            height: 32px;
+            margin-right: 0.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .main {
+            flex: 1;
+            padding: 2rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-container {
             background-color: white;
-            padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
         }
         
-        h1 {
-            color: #3c66c4;
-            margin-top: 0;
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
         }
         
-        p {
+        .login-title {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-subtitle {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .form-group {
             margin-bottom: 1.5rem;
         }
         
-        .notice {
-            background-color: #fff3cd;
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .form-text {
+            display: block;
+            margin-top: 0.25rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-check-input {
+            margin-right: 0.5rem;
+        }
+        
+        .form-check-label {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            vertical-align: middle;
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 4px;
+            transition: all 0.15s ease-in-out;
+            border: none;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0043a4;
+        }
+        
+        .auth-links {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .auth-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .alert {
             padding: 1rem;
-            border-left: 4px solid #ffc107;
             margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+        
+        .alert-danger {
+            background-color: #ffebe6;
+            color: var(--danger-color);
+            border: 1px solid #ffbdad;
+        }
+        
+        .alert-warning {
+            background-color: #fffae6;
+            color: var(--warning-color);
+            border: 1px solid #ffe380;
+        }
+        
+        .alert-info {
+            background-color: #deebff;
+            color: var(--info-color);
+            border: 1px solid #b3d4ff;
+        }
+        
+        .footer {
+            background-color: white;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--text-color);
+        }
+        
+        .copyright {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links, .footer-links {
+                display: none;
+            }
+            
+            .footer-content {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>XSS Lab #9</h1>
-        <div class="notice">
-            <p>This is a placeholder for lab #9: Reflected XSS via Error Messages</p>
-            <p>To solve this lab, you'll need to insert code that displays an alert with the text "Xpwned".</p>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke="#0052cc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.99998 3H8.99998C7.04998 8.84 7.04998 15.16 8.99998 21H7.99998" stroke="#0052cc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M15 3C16.95 8.84 16.95 15.16 15 21" stroke="#0052cc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3 16V15C8.84 16.95 15.16 16.95 21 15V16" stroke="#0052cc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3 9.0001C8.84 7.0501 15.16 7.0501 21 9.0001" stroke="#0052cc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    SecureBank
+                </a>
+                
+                <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
         </div>
-        
-        <div id="lab-content">
-            <p>Lab content placeholder. For a complete implementation, replace this with the actual lab content.</p>
+    </header>
+
+    <main class="main">
+        <div class="login-container">
+            <div class="login-header">
+                <h1 class="login-title">Login to your account</h1>
+                <p class="login-subtitle">Access your banking services securely</p>
+            </div>
+            
+            <div id="error-container">
+                <!-- Error messages will be displayed here -->
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password">
+                    <small class="form-text">Your password must be at least 8 characters long.</small>
+                </div>
+                
+                <div class="form-check">
+                    <input type="checkbox" id="remember-me" name="remember-me" class="form-check-input">
+                    <label for="remember-me" class="form-check-label">Remember me on this device</label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">Log In</button>
+            </form>
+            
+            <div class="auth-links">
+                <p><a href="#">Forgot username or password?</a></p>
+                <p>Don't have an account? <a href="#">Register now</a></p>
+            </div>
         </div>
-    </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <ul class="footer-links">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Security</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+                
+                <div class="copyright">
+                    &copy; 2025 SecureBank. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // Minimal success detection script for the lab
-        window.addEventListener('error', function(e) {
-            if (e.message && e.message.includes('Xpwned')) {
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('login-form');
+            const errorContainer = document.getElementById('error-container');
+            
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const errorParam = urlParams.get('error');
+            
+            // Check if there's an error parameter in the URL
+            if (errorParam) {
+                // Create error message - this is the vulnerable part!
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'alert alert-danger';
+                
+                // Display the error directly from the URL parameter without sanitization
+                errorMessage.innerHTML = `Login failed: ${decodeURIComponent(errorParam)}`;
+                
+                // Add the error message to the container
+                errorContainer.appendChild(errorMessage);
+            }
+            
+            // Handle form submission
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
+                
+                // Validate form
+                if (!username || !password) {
+                    // Create error message
+                    const errorMessage = document.createElement('div');
+                    errorMessage.className = 'alert alert-danger';
+                    errorMessage.textContent = 'Please enter both username and password.';
+                    
+                    // Clear previous errors
+                    errorContainer.innerHTML = '';
+                    errorContainer.appendChild(errorMessage);
+                    return;
+                }
+                
+                // Simulate a failed login (always fails for this lab)
+                // In a real app, this would send a request to the server
+                const errorReason = encodeURIComponent('Invalid username or password');
+                window.location.href = `?error=${errorReason}`;
+            });
+            
+            // Set up XSS detection functions
+            function setupXssDetection() {
+                // Override alert function to detect XSS success
+                const originalAlert = window.alert;
+                window.alert = function(message) {
+                    if (message && message.toString().includes('Xpwned')) {
+                        window.parent.postMessage({
+                            type: 'LAB_COMPLETED',
+                            labId: '9'
+                        }, '*');
+                    }
+                    return originalAlert.apply(this, arguments);
+                };
+                
+                // Set up a MutationObserver to detect DOM changes
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                            for (let i = 0; i < mutation.addedNodes.length; i++) {
+                                const node = mutation.addedNodes[i];
+                                if (node.nodeType === 1 && node.outerHTML && 
+                                    (node.outerHTML.includes('alert') || node.outerHTML.includes('script')) && 
+                                    node.outerHTML.includes('Xpwned')) {
+                                    labCompleted();
+                                }
+                            }
+                        }
+                    });
+                });
+                
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+                
+                // Listen for error events
+                window.addEventListener('error', function(e) {
+                    if (e.message && e.message.includes('Xpwned')) {
+                        labCompleted();
+                    }
+                });
+            }
+            
+            function labCompleted() {
                 window.parent.postMessage({
                     type: 'LAB_COMPLETED',
                     labId: '9'
                 }, '*');
             }
-        });
-        
-        // Success detection via DOM mutations
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                    for (let i = 0; i < mutation.addedNodes.length; i++) {
-                        const node = mutation.addedNodes[i];
-                        if (node.nodeType === 1 && node.outerHTML && 
-                            node.outerHTML.includes('alert') && 
-                            node.outerHTML.includes('Xpwned')) {
-                            window.parent.postMessage({
-                                type: 'LAB_COMPLETED',
-                                labId: '9'
-                            }, '*');
-                        }
-                    }
-                }
-            });
-        });
-        
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
+            
+            // Initialize XSS detection
+            setupXssDetection();
         });
     </script>
 </body>
