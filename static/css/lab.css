@@ -1,0 +1,223 @@
+/* 
+ * XSSploit - Lab Page Stylesheet
+ * Styles for individual lab pages
+ */
+
+.lab-page {
+    padding: 3rem 0;
+}
+
+.lab-header {
+    margin-bottom: 2rem;
+}
+
+.lab-breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-link {
+    color: var(--primary-color);
+}
+
+.breadcrumb-separator {
+    margin: 0 0.5rem;
+    color: var(--text-light);
+}
+
+.breadcrumb-current {
+    color: var(--text-light);
+}
+
+.lab-title {
+    font-size: 2.2rem;
+    margin-bottom: 0.8rem;
+}
+
+.lab-meta {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.lab-content-wrapper {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+}
+
+.lab-sidebar {
+    background-color: var(--background-alt);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.lab-instructions {
+    margin-bottom: 2rem;
+}
+
+.lab-instructions h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.instructions-content {
+    margin-bottom: 1.5rem;
+}
+
+.instructions-content p {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.lab-hints {
+    margin-bottom: 1.5rem;
+}
+
+.hint-content {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: rgba(255, 193, 7, 0.1);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+}
+
+.lab-progress {
+    background-color: var(--background);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+}
+
+.lab-timer {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.timer-label {
+    color: var(--text-light);
+    margin-right: 0.5rem;
+}
+
+.lab-navigation {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+
+.lab-nav-title {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.lab-nav-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.lab-playground {
+    background-color: var(--background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.lab-scenario-title {
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.lab-scenario-description {
+    padding: 1rem 1.5rem;
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+}
+
+.lab-frame-container {
+    border-top: 1px solid var(--border-color);
+    height: 600px;
+    position: relative;
+}
+
+.lab-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Success Modal Styles */
+.success-modal {
+    max-width: 500px;
+    text-align: center;
+}
+
+.success-header {
+    margin-bottom: 1.5rem;
+}
+
+.success-header i {
+    font-size: 3.5rem;
+    color: var(--success-color);
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.success-details {
+    margin-bottom: 2rem;
+}
+
+.success-details p {
+    margin-bottom: 0.8rem;
+}
+
+.success-details span {
+    font-weight: 600;
+}
+
+.success-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .lab-content-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .lab-sidebar {
+        order: 2;
+    }
+    
+    .lab-playground {
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .lab-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .lab-frame-container {
+        height: 500px;
+    }
+}
+
+@media (max-width: 576px) {
+    .lab-nav-buttons {
+        flex-direction: column;
+    }
+    
+    .lab-frame-container {
+        height: 400px;
+    }
+}

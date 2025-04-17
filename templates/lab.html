@@ -1,0 +1,353 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<section class="lab-page">
+    <div class="container">
+        <div class="lab-header">
+            <div class="lab-breadcrumb">
+                <a href="/" class="breadcrumb-link">Home</a>
+                <span class="breadcrumb-separator">/</span>
+                <a href="/#labs" class="breadcrumb-link">Labs</a>
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-current">{{ lab.title }}</span>
+            </div>
+            <h1 class="lab-title">{{ lab.title }}</h1>
+            <div class="lab-meta">
+                <span class="lab-category">Category: {{ lab.category|replace('-', ' ')|title }}</span>
+                <span class="lab-difficulty">Difficulty: {{ lab.difficulty }}</span>
+            </div>
+        </div>
+
+        <div class="lab-content-wrapper">
+            <div class="lab-sidebar">
+                <div class="lab-instructions">
+                    <h2>Instructions</h2>
+                    <div class="instructions-content">
+                        <p>This lab demonstrates a {{ lab.category|replace('-', ' ') }} XSS vulnerability. Your goal is to inject a JavaScript payload that displays an alert with the text "Xpwned".</p>
+                        <p>Experiment with different techniques and inputs to find and exploit the vulnerability.</p>
+                    </div>
+
+                    <div class="lab-hints">
+                        <button id="hint-toggle" class="btn btn-secondary">Show Hint</button>
+                        <div id="hint-content" class="hint-content" style="display: none;">
+                            <!-- Hints will be loaded dynamically based on the lab ID -->
+                        </div>
+                    </div>
+
+                    <div class="lab-progress">
+                        <div class="lab-timer">
+                            <span class="timer-label">Time:</span>
+                            <span id="lab-timer-display">00:00:00</span>
+                        </div>
+                        <button id="reset-lab-btn" class="btn btn-small">Reset Lab</button>
+                    </div>
+                </div>
+
+                <div class="lab-navigation">
+                    <div class="lab-nav-title">Lab Navigation</div>
+                    <div class="lab-nav-buttons">
+                        <button id="prev-lab-btn" class="btn btn-secondary btn-small" {% if lab.id == '1' %}disabled{% endif %}>
+                            <i class="fas fa-chevron-left"></i> Previous Lab
+                        </button>
+                        <button id="next-lab-btn" class="btn btn-secondary btn-small" {% if lab.id == '50' %}disabled{% endif %}>
+                            Next Lab <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lab-playground">
+                <div class="lab-scenario-title">Real-World Scenario</div>
+                <div class="lab-scenario-description" id="scenario-description">
+                    <!-- Dynamic scenario description based on lab ID -->
+                </div>
+                <div class="lab-frame-container">
+                    <iframe id="lab-frame" class="lab-frame" sandbox="allow-scripts allow-same-origin" src="/static/labs/lab{{ lab.id }}.html"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Success Modal -->
+<div id="success-modal" class="modal">
+    <div class="modal-content success-modal">
+        <span class="close">&times;</span>
+        <div class="success-header">
+            <i class="fas fa-check-circle"></i>
+            <h2>Challenge Completed!</h2>
+        </div>
+        <div class="success-details">
+            <p>You've successfully completed: <span>{{ lab.title }}</span></p>
+            <p>Time taken: <span id="completed-lab-time">00:00:00</span></p>
+        </div>
+        <div class="success-actions">
+            <button id="continue-lab-btn" class="btn btn-primary">Continue</button>
+            <button id="back-to-dashboard-btn" class="btn btn-secondary">Back to Dashboard</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // We'll use localStorage for tracking progress instead of Firebase
+
+    // Current lab data
+    const currentLab = {
+        id: "{{ lab.id }}",
+        title: "{{ lab.title }}",
+        category: "{{ lab.category }}",
+        difficulty: "{{ lab.difficulty }}"
+    };
+
+    // Lab hints for each lab
+    const labHints = {
+        "1": "Try adding a script tag in the search parameter (?search=) that executes alert('Xpwned').",
+        "2": "The comment form doesn't sanitize user input. Try submitting a comment with a script tag.",
+        "3": "URL fragments (#) are processed by JavaScript. Try manipulating the fragment to inject code.",
+        "4": "URL path segments can sometimes be reflected in the page. Try injecting code in the URL path.",
+        "5": "The page reflects the HTTP Referrer header. Use a proxy tool to modify this header.",
+        "6": "Cookies set by the client can be manipulated. Try injecting code in a cookie value.",
+        "7": "The User-Agent header is reflected in the page. Use a proxy tool to modify this header.",
+        "8": "The page allows certain HTML tags. Try injecting a script tag or other executable HTML.",
+        "9": "Error messages often reflect user input. Try causing an error that includes your payload.",
+        "10": "Open redirects can sometimes be exploited for XSS. Try injecting JavaScript in the redirect parameter.",
+        "11": "The page uses innerHTML to update content. Try injecting HTML that executes JavaScript.",
+        "12": "document.write() directly writes to the DOM. Try finding where it's used and inject your code.",
+        "13": "The page uses eval() to execute code. Find a parameter that gets passed to eval().",
+        "14": "Event handlers like onclick can execute JavaScript. Try injecting an event handler attribute.",
+        "15": "window.location.href is used to get the current URL. Try manipulating the URL to inject code.",
+        "16": "Similar to location.href, document.location is used without proper sanitization.",
+        "17": "The setAttribute() method can be exploited if user input is used. Look for dynamic attribute setting.",
+        "18": "The page adds event listeners dynamically. Try to inject code that gets executed by these listeners.",
+        "19": "Although innerText is supposed to be safe, improper use can lead to XSS. Look for misuse.",
+        "20": "javascript: URLs can execute code. Try injecting a javascript: URL in a link or redirect.",
+        "21": "Content Security Policy is in place but may have weaknesses. Look for ways to bypass it.",
+        "22": "The page loads JSON data and processes it insecurely. Try injecting code in a JSON field.",
+        "23": "JSONP endpoints allow script injection. Look for callback parameters you can manipulate.",
+        "24": "The Access-Control-Allow-Origin header is misconfigured. Exploit cross-origin access.",
+        "25": "The srcdoc attribute in iframes can execute HTML/JS. Try injecting code in this attribute.",
+        "26": "The sandbox attribute in iframes can be exploited if misconfigured. Look for weaknesses.",
+        "27": "The page processes Base64-encoded data. Try encoding your payload in Base64.",
+        "28": "SVG files can contain executable JavaScript. Try injecting a script inside an SVG element.",
+        "29": "The page uses Mutation Observers. Try triggering DOM changes that execute your code.",
+        "30": "The window.name property persists across page loads. Try exploiting this behavior.",
+        "31": "The page blocks script tags. Try alternative ways to execute JavaScript without using <script>.",
+        "32": "URL encoding can bypass filters. Try encoding special characters in your payload.",
+        "33": "Double encoding (encoding already encoded characters) can bypass some filters.",
+        "34": "Null bytes (%00) can sometimes terminate strings early. Try using them in your payload.",
+        "35": "HTML is case-insensitive. Try mixing uppercase and lowercase in your tags/attributes.",
+        "36": "Browsers can render malformed HTML. Try creating incomplete or invalid tags that still execute.",
+        "37": "Many event handlers can execute JavaScript. Try onerror, onload, or other events.",
+        "38": "CSS can sometimes execute JavaScript. Try injecting code in style attributes or tags.",
+        "39": "The page uses templates (like Jinja2). Try exploiting template syntax to execute code.",
+        "40": "Attribute values may not properly escape characters. Try breaking out of attributes.",
+        "41": "iframes can load external content. Try injecting an iframe that loads malicious content.",
+        "42": "HTTP headers can be split with special characters. Try injecting a response-splitting payload.",
+        "43": "The Content-Type header affects how content is processed. Try manipulating this header.",
+        "44": "PWA manifests can contain JavaScript. Look for ways to inject code in the manifest.",
+        "45": "Service Workers can intercept requests. Try registering a malicious Service Worker.",
+        "46": "The page dynamically injects HTML with event handlers. Look for ways to manipulate this.",
+        "47": "Template literals (${...}) in JavaScript can execute code. Try injecting into a template literal.",
+        "48": "CSS <style> tags can sometimes be used for XSS. Try injecting malicious CSS.",
+        "49": "DOM Clobbering overwrites object properties. Try creating elements with conflicting names.",
+        "50": "The page dynamically loads scripts. Try manipulating the script source to execute your code."
+    };
+
+    // Lab scenario descriptions
+    const labScenarios = {
+        "1": "You're testing an e-commerce website called 'ShopSecure'. The search functionality reflects user input without proper sanitization.",
+        "2": "A blog site called 'TechThoughts' has a comment section that doesn't properly sanitize user input before displaying it.",
+        "3": "You're testing a single-page application that uses URL fragments (#) to control navigation, without properly sanitizing them.",
+        "4": "A knowledge base website displays content based on URL path segments, which are reflected without sanitization.",
+        "5": "A visitor analytics dashboard displays the referrer URL of visitors without proper sanitization.",
+        "6": "A preferences page on a web application reflects cookie values in the page without sanitization.",
+        "7": "A browser information page displays the User-Agent of visitors without sanitizing the output.",
+        "8": "A forum allows certain HTML tags for formatting but doesn't properly validate them, allowing script injection.",
+        "9": "A login system displays error messages that reflect user input without proper encoding.",
+        "10": "A link shortener service has a redirect feature that doesn't properly validate destination URLs.",
+        "11": "A news aggregator dynamically updates article summaries using innerHTML, without sanitizing content.",
+        "12": "A dynamic greeting page uses document.write() to display personalized messages from URL parameters.",
+        "13": "A calculator webpage uses eval() to process mathematical expressions provided by users.",
+        "14": "An image gallery uses onclick events to display images, with the event handlers constructed from user data.",
+        "15": "A theme preview page reads colors from the URL using window.location.href without validation.",
+        "16": "A URL shortener display page uses document.location to get the current URL without sanitization.",
+        "17": "A profile page sets attributes on HTML elements based on user preferences without validation.",
+        "18": "A messaging application adds event listeners to UI elements based on user configuration.",
+        "19": "A text formatting preview tool uses innerText inappropriately, leading to XSS vulnerabilities.",
+        "20": "A documentation site has a navigation system that uses javascript: URLs without proper validation.",
+        "21": "A secure file sharing site implements CSP but has misconfiguration that can be bypassed.",
+        "22": "An API explorer tool displays JSON responses in the page without proper sanitization.",
+        "23": "A widget embedding system uses JSONP callbacks that can be manipulated by attackers.",
+        "24": "A cross-domain API has a misconfigured Access-Control-Allow-Origin header allowing exploitation.",
+        "25": "A sandbox environment uses iframes with the srcdoc attribute to display user-provided content.",
+        "26": "A secure document viewer uses sandboxed iframes but has misconfigured the sandbox attribute.",
+        "27": "A base64 encoding/decoding tool processes and displays encoded content without proper validation.",
+        "28": "A profile picture customization tool allows SVG image uploads without proper sanitization.",
+        "29": "A real-time collaboration tool uses Mutation Observers to track DOM changes from user input.",
+        "30": "A multi-step form wizard stores data in window.name between pages without sanitization.",
+        "31": "A blog site blocks <script> tags but doesn't block other ways to execute JavaScript.",
+        "32": "A search function has basic XSS protection but doesn't account for URL encoding.",
+        "33": "A security filter checks for encoded characters but doesn't check for double-encoding.",
+        "34": "An input validator doesn't properly handle null bytes in user input.",
+        "35": "A comment system blocks lowercase 'script' tags but doesn't account for case variations.",
+        "36": "A forum allows HTML but tries to validate tag completeness, with flaws that can be exploited.",
+        "37": "A photo sharing site blocks script tags but allows various event handler attributes.",
+        "38": "A theme customization page allows custom CSS but doesn't prevent JavaScript execution via CSS.",
+        "39": "A templating system like Flask/Jinja2 has improperly escaped template variables.",
+        "40": "A form processor doesn't properly escape attribute values, allowing breaking out of quoted attributes.",
+        "41": "A content embedding system allows iframe embedding without proper restrictions.",
+        "42": "A custom header processing system is vulnerable to HTTP response splitting.",
+        "43": "A file upload system doesn't properly validate or set Content-Type headers.",
+        "44": "A Progressive Web App has a misconfigured manifest file that can be exploited.",
+        "45": "A web application allows registering custom Service Workers with insufficient validation.",
+        "46": "A dynamic UI builder injects HTML with event handlers based on user configuration.",
+        "47": "A personalization system uses template literals to display user data without sanitization.",
+        "48": "A theme editor allows custom CSS in <style> tags without preventing JavaScript execution.",
+        "49": "A form processing system has DOM Clobbering vulnerabilities due to name conflicts.",
+        "50": "A plugin system dynamically loads JavaScript files based on user preferences without validation."
+    };
+
+    // On document ready
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set the lab hint
+        document.getElementById('hint-content').textContent = labHints[currentLab.id] || "No hint available for this lab.";
+        
+        // Set the lab scenario description
+        document.getElementById('scenario-description').textContent = labScenarios[currentLab.id] || "No scenario description available.";
+        
+        // Handle hint toggle
+        const hintToggle = document.getElementById('hint-toggle');
+        const hintContent = document.getElementById('hint-content');
+        
+        hintToggle.addEventListener('click', function() {
+            if (hintContent.style.display === 'none') {
+                hintContent.style.display = 'block';
+                hintToggle.textContent = 'Hide Hint';
+            } else {
+                hintContent.style.display = 'none';
+                hintToggle.textContent = 'Show Hint';
+            }
+        });
+        
+        // Success modal controls
+        const successModal = document.getElementById('success-modal');
+        const closeBtn = successModal.querySelector('.close');
+        const continueLabBtn = document.getElementById('continue-lab-btn');
+        const backToDashboardBtn = document.getElementById('back-to-dashboard-btn');
+        
+        closeBtn.addEventListener('click', function() {
+            successModal.style.display = 'none';
+        });
+        
+        continueLabBtn.addEventListener('click', function() {
+            successModal.style.display = 'none';
+            // Go to next lab if not the last one
+            if (currentLab.id !== '50') {
+                window.location.href = '/lab/' + (parseInt(currentLab.id) + 1);
+            }
+        });
+        
+        backToDashboardBtn.addEventListener('click', function() {
+            window.location.href = '/#lab-dashboard';
+        });
+        
+        // Lab navigation
+        const prevLabBtn = document.getElementById('prev-lab-btn');
+        const nextLabBtn = document.getElementById('next-lab-btn');
+        const resetLabBtn = document.getElementById('reset-lab-btn');
+        
+        if (prevLabBtn) {
+            prevLabBtn.addEventListener('click', function() {
+                if (currentLab.id !== '1') {
+                    window.location.href = '/lab/' + (parseInt(currentLab.id) - 1);
+                }
+            });
+        }
+        
+        if (nextLabBtn) {
+            nextLabBtn.addEventListener('click', function() {
+                if (currentLab.id !== '50') {
+                    window.location.href = '/lab/' + (parseInt(currentLab.id) + 1);
+                }
+            });
+        }
+        
+        if (resetLabBtn) {
+            resetLabBtn.addEventListener('click', function() {
+                const labFrame = document.getElementById('lab-frame');
+                labFrame.src = labFrame.src;
+            });
+        }
+        
+        // Timer functionality
+        let startTime = Date.now();
+        let timerInterval;
+        let timerDisplay = document.getElementById('lab-timer-display');
+        
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+        
+        function stopTimer() {
+            clearInterval(timerInterval);
+            return Date.now() - startTime;
+        }
+        
+        function updateTimer() {
+            const elapsedTime = Date.now() - startTime;
+            timerDisplay.textContent = formatTime(elapsedTime);
+        }
+        
+        function formatTime(ms) {
+            const seconds = Math.floor((ms / 1000) % 60);
+            const minutes = Math.floor((ms / (1000 * 60)) % 60);
+            const hours = Math.floor(ms / (1000 * 60 * 60));
+            
+            return [
+                hours.toString().padStart(2, '0'),
+                minutes.toString().padStart(2, '0'),
+                seconds.toString().padStart(2, '0')
+            ].join(':');
+        }
+        
+        // Start the timer
+        startTimer();
+        
+        // Listen for messages from the lab iframe
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'LAB_COMPLETED') {
+                // Stop the timer and calculate elapsed time
+                const elapsedTime = stopTimer();
+                
+                // Update the success modal
+                document.getElementById('completed-lab-time').textContent = formatTime(elapsedTime);
+                
+                // Show the success modal
+                successModal.style.display = 'flex';
+                
+                // Store progress in localStorage
+                const userId = localStorage.getItem('xssploit_user_id') || 'user_' + Math.random().toString(36).substring(2);
+                localStorage.setItem('xssploit_user_id', userId);
+                
+                // Get existing progress or initialize empty object
+                const progress = JSON.parse(localStorage.getItem('xssploit_progress') || '{}');
+                
+                // Update progress for this lab
+                progress[currentLab.id] = {
+                    completed: true,
+                    time: elapsedTime
+                };
+                
+                // Save back to localStorage
+                localStorage.setItem('xssploit_progress', JSON.stringify(progress));
+            }
+        });
+    });
+</script>
+
+<!-- Add lab-specific JavaScript -->
+<script src="{{ url_for('static', filename='js/lab-utils.js') }}"></script>
+{% endblock %}
