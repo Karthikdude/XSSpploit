@@ -1,89 +1,55 @@
-{% extends 'layout.html' %}
+{% extends "layout.html" %}
 
 {% block content %}
-<section class="lab-page">
-    <div class="container">
-        <div class="lab-header">
-            <div class="lab-breadcrumb">
-                <a href="/" class="breadcrumb-link">Home</a>
-                <span class="breadcrumb-separator">/</span>
-                <a href="/#labs" class="breadcrumb-link">Labs</a>
-                <span class="breadcrumb-separator">/</span>
-                <span class="breadcrumb-current">{{ lab.title }}</span>
-            </div>
+<div class="lab-container">
+    <div class="lab-header">
+        <div class="lab-info">
             <h1 class="lab-title">{{ lab.title }}</h1>
-            <div class="lab-meta">
-                <span class="lab-category">Category: {{ lab.category|replace('-', ' ')|title }}</span>
+            <div class="lab-details">
+                <span class="lab-category">Category: {{ lab.category }}</span>
                 <span class="lab-difficulty">Difficulty: {{ lab.difficulty }}</span>
             </div>
         </div>
-
-        <div class="lab-content-wrapper">
-            <div class="lab-sidebar">
-                <div class="lab-instructions">
-                    <h2>Instructions</h2>
-                    <div class="instructions-content">
-                        <p>This lab demonstrates a {{ lab.category|replace('-', ' ') }} XSS vulnerability. Your goal is to inject a JavaScript payload that displays an alert with the text "Xpwned".</p>
-                        <p>Experiment with different techniques and inputs to find and exploit the vulnerability.</p>
-                    </div>
-
-                    <div class="lab-hints">
-                        <button id="hint-toggle" class="btn btn-secondary">Show Hint</button>
-                        <div id="hint-content" class="hint-content" style="display: none;">
-                            <!-- Hints will be loaded dynamically based on the lab ID -->
-                        </div>
-                    </div>
-
-                    <div class="lab-progress">
-                        <div class="lab-timer">
-                            <span class="timer-label">Time:</span>
-                            <span id="lab-timer-display">00:00:00</span>
-                        </div>
-                        <button id="reset-lab-btn" class="btn btn-small">Reset Lab</button>
-                    </div>
-                </div>
-
-                <div class="lab-navigation">
-                    <div class="lab-nav-title">Lab Navigation</div>
-                    <div class="lab-nav-buttons">
-                        <button id="prev-lab-btn" class="btn btn-secondary btn-small" {% if lab.id == '1' %}disabled{% endif %}>
-                            <i class="fas fa-chevron-left"></i> Previous Lab
-                        </button>
-                        <button id="next-lab-btn" class="btn btn-secondary btn-small" {% if lab.id == '50' %}disabled{% endif %}>
-                            Next Lab <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lab-playground">
-                <div class="lab-scenario-title">Real-World Scenario</div>
-                <div class="lab-scenario-description" id="scenario-description">
-                    <!-- Dynamic scenario description based on lab ID -->
-                </div>
-                <div class="lab-frame-container">
-                    <iframe id="lab-frame" class="lab-frame" sandbox="allow-scripts allow-same-origin" src="/static/labs/lab{{ lab.id }}.html"></iframe>
-                </div>
-            </div>
+        <div class="lab-timer">
+            <span>Time: <span id="lab-timer-display">00:00:00</span></span>
         </div>
     </div>
-</section>
-
-<!-- Success Modal -->
-<div id="success-modal" class="modal">
-    <div class="modal-content success-modal">
-        <span class="close">&times;</span>
-        <div class="success-header">
-            <i class="fas fa-check-circle"></i>
-            <h2>Challenge Completed!</h2>
+    
+    <div class="lab-content">
+        <div class="lab-description">
+            <div class="scenario">
+                <h2>Scenario</h2>
+                <p id="scenario-description">Loading scenario...</p>
+            </div>
+            
+            <div class="hint-section">
+                <button id="hint-toggle" class="button-secondary">Show Hint</button>
+                <p id="hint-content" style="display: none;">Loading hint...</p>
+            </div>
+            
+            <div class="lab-controls">
+                <button id="prev-lab-btn" class="button-secondary" {% if lab.id == '1' %}disabled{% endif %}>Previous Lab</button>
+                <button id="reset-lab-btn" class="button-primary">Reset Lab</button>
+                <button id="next-lab-btn" class="button-secondary" {% if lab.id == '50' %}disabled{% endif %}>Next Lab</button>
+            </div>
         </div>
-        <div class="success-details">
-            <p>You've successfully completed: <span>{{ lab.title }}</span></p>
+        
+        <div class="lab-frame-container">
+            <iframe id="lab-frame" src="/static/labs/{{ lab.id }}/index.html" sandbox="allow-forms allow-scripts allow-same-origin" class="lab-frame"></iframe>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Congratulations!</h2>
+            <p>You've successfully completed the lab: <strong>{{ lab.title }}</strong></p>
             <p>Time taken: <span id="completed-lab-time">00:00:00</span></p>
-        </div>
-        <div class="success-actions">
-            <button id="continue-lab-btn" class="btn btn-primary">Continue</button>
-            <button id="back-to-dashboard-btn" class="btn btn-secondary">Back to Dashboard</button>
+            <div class="modal-buttons">
+                <button id="continue-lab-btn" class="button-primary">Continue to Next Lab</button>
+                <button id="back-to-dashboard-btn" class="button-secondary">Back to Dashboard</button>
+            </div>
         </div>
     </div>
 </div>

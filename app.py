@@ -385,33 +385,29 @@ def get_user_progress(user_id):
         logging.error(f"Error getting user progress: {e}")
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/leaderboard')
+@app.route('/api/leaderboard', methods=['GET', 'POST'])
 def get_leaderboard():
-    try:
-        # For now, return a sample leaderboard
-        # In a production app, this would be retrieved from a database
-        sample_leaderboard = [
-            {
-                'userId': '1',
-                'username': 'HackerPro',
-                'totalTime': 3600000  # 1 hour
-            },
-            {
-                'userId': '2',
-                'username': 'SecurityNinja',
-                'totalTime': 5400000  # 1.5 hours
-            },
-            {
-                'userId': '3',
-                'username': 'XSSMaster',
-                'totalTime': 7200000  # 2 hours
-            }
-        ]
-        
-        return jsonify(sample_leaderboard), 200
-    except Exception as e:
-        logging.error(f"Error getting leaderboard: {e}")
-        return jsonify({"error": str(e)}), 500
+    if request.method == 'POST':
+        try:
+            # Store leaderboard entry
+            data = request.json
+            username = data.get('username', 'Anonymous')
+            total_time = data.get('totalTime', 0)
+            
+            # In a production app, this would be stored in a database
+            logging.info(f"Received leaderboard entry: {username}, {total_time}")
+            
+            return jsonify({"success": True}), 200
+        except Exception as e:
+            logging.error(f"Error updating leaderboard: {e}")
+            return jsonify({"error": str(e)}), 500
+    else:
+        try:
+            # Return empty leaderboard - will be populated by client-side code
+            return jsonify([]), 200
+        except Exception as e:
+            logging.error(f"Error getting leaderboard: {e}")
+            return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

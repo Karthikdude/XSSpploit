@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppHub - Modern Single Page Application</title>
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --light-text: #666;
+            --card-bg: #fff;
+            --border-color: #ddd;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --success-color: #00b894;
+            --error-color: #d63031;
+            --warning-color: #fdcb6e;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 1.5rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--light-text);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        nav a:hover, 
+        nav a.active {
+            color: var(--primary-color);
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .user-name {
+            font-weight: 500;
+        }
+        
+        main {
+            min-height: calc(100vh - 180px);
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .page-title {
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 600;
+        }
+        
+        /* Home page */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .card-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .stats-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            color: var(--text-color);
+        }
+        
+        .stats-description {
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+        
+        /* Projects page */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .project-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .project-image {
+            height: 160px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-text);
+        }
+        
+        .project-details {
+            padding: 1.5rem;
+        }
+        
+        .project-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .project-description {
+            color: var(--light-text);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--light-text);
+        }
+        
+        /* Profile page */
+        .profile-container {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .profile-sidebar {
+            flex: 1;
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        
+        .profile-content {
+            flex: 3;
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .profile-name {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-role {
+            text-align: center;
+            color: var(--light-text);
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--light-text);
+        }
+        
+        .profile-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .profile-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-links a {
+            display: block;
+            padding: 0.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: background-color 0.2s;
+        }
+        
+        .profile-links a:hover {
+            background-color: rgba(108, 92, 231, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .profile-info-item {
+            margin-bottom: 1rem;
+        }
+        
+        .profile-info-label {
+            font-weight: 500;
+            color: var(--light-text);
+            margin-bottom: 0.3rem;
+        }
+        
+        /* Settings page */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .settings-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .settings-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 1rem;
+            color: var(--primary-color);
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            font-family: inherit;
+            font-size: inherit;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+        }
+        
+        .form-switch {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .switch-label {
+            margin-left: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #5d4fd0;
+        }
+        
+        .notification {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .notification-success {
+            background-color: rgba(0, 184, 148, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+        
+        footer {
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .profile-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">AppHub</div>
+            <nav>
+                <ul>
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#profile">Profile</a></li>
+                    <li><a href="#settings">Settings</a></li>
+                </ul>
+            </nav>
+            <div class="user-section">
+                <div class="user-avatar">JS</div>
+                <div class="user-name">John Smith</div>
+            </div>
+        </header>
+        
+        <main id="app-content">
+            <!-- Home Page -->
+            <div id="home" class="page active">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Active Projects</h2>
+                            <div class="card-icon">P</div>
+                        </div>
+                        <div class="stats-value">8</div>
+                        <div class="stats-description">You have 8 active projects, 3 pending review.</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Tasks Completed</h2>
+                            <div class="card-icon">T</div>
+                        </div>
+                        <div class="stats-value">42</div>
+                        <div class="stats-description">You've completed 42 tasks this month.</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Team Members</h2>
+                            <div class="card-icon">M</div>
+                        </div>
+                        <div class="stats-value">12</div>
+                        <div class="stats-description">You're working with 12 team members.</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Notifications</h2>
+                            <div class="card-icon">N</div>
+                        </div>
+                        <div class="stats-value">5</div>
+                        <div class="stats-description">You have 5 unread notifications.</div>
+                    </div>
+                </div>
+                
+                <h2 class="page-title">Recent Projects</h2>
+                <div class="project-grid">
+                    <div class="project-card">
+                        <div class="project-image">Project Image</div>
+                        <div class="project-details">
+                            <h3 class="project-title">E-commerce Redesign</h3>
+                            <p class="project-description">Redesigning the user interface for an e-commerce platform to improve user experience and conversion rates.</p>
+                            <div class="project-meta">
+                                <span>Progress: 75%</span>
+                                <span>Due: April 28, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-image">Project Image</div>
+                        <div class="project-details">
+                            <h3 class="project-title">CRM Integration</h3>
+                            <p class="project-description">Integrating a custom CRM solution with existing systems to streamline customer management processes.</p>
+                            <div class="project-meta">
+                                <span>Progress: 45%</span>
+                                <span>Due: May 15, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-image">Project Image</div>
+                        <div class="project-details">
+                            <h3 class="project-title">Mobile App Development</h3>
+                            <p class="project-description">Developing a cross-platform mobile application for task management with real-time synchronization.</p>
+                            <div class="project-meta">
+                                <span>Progress: 30%</span>
+                                <span>Due: June 5, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Projects Page -->
+            <div id="projects" class="page">
+                <h1 class="page-title">My Projects</h1>
+                <div class="project-grid">
+                    <div class="project-card">
+                        <div class="project-image">Project Image</div>
+                        <div class="project-details">
+                            <h3 class="project-title">E-commerce Redesign</h3>
+                            <p class="project-description">Redesigning the user interface for an e-commerce platform to improve user experience and conversion rates.</p>
+                            <div class="project-meta">
+                                <span>Progress: 75%</span>
+                                <span>Due: April 28, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-image">Project Image</div>
+                        <div class="project-details">
+                            <h3 class="project-title">CRM Integration</h3>
+                            <p class="project-description">Integrating a custom CRM solution with existing systems to streamline customer management processes.</p>
+                            <div class="project-meta">
+                                <span>Progress: 45%</span>
+                                <span>Due: May 15, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-image">Project Image</div>
+                        <div class="project-details">
+                            <h3 class="project-title">Mobile App Development</h3>
+                            <p class="project-description">Developing a cross-platform mobile application for task management with real-time synchronization.</p>
+                            <div class="project-meta">
+                                <span>Progress: 30%</span>
+                                <span>Due: June 5, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-image">Project Image</div>
+                        <div class="project-details">
+                            <h3 class="project-title">AI Data Analysis</h3>
+                            <p class="project-description">Implementing machine learning algorithms to analyze customer data and provide actionable insights.</p>
+                            <div class="project-meta">
+                                <span>Progress: 60%</span>
+                                <span>Due: May 30, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-image">Project Image</div>
+                        <div class="project-details">
+                            <h3 class="project-title">Website Migration</h3>
+                            <p class="project-description">Migrating a corporate website to a new content management system with improved performance.</p>
+                            <div class="project-meta">
+                                <span>Progress: 90%</span>
+                                <span>Due: April 22, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-image">Project Image</div>
+                        <div class="project-details">
+                            <h3 class="project-title">Cloud Infrastructure</h3>
+                            <p class="project-description">Setting up a scalable cloud infrastructure for a growing SaaS application.</p>
+                            <div class="project-meta">
+                                <span>Progress: 50%</span>
+                                <span>Due: June 15, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Page -->
+            <div id="profile" class="page">
+                <h1 class="page-title">My Profile</h1>
+                <div class="profile-container">
+                    <div class="profile-sidebar">
+                        <div class="profile-avatar">JS</div>
+                        <h2 class="profile-name">John Smith</h2>
+                        <div class="profile-role">Senior Project Manager</div>
+                        
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">8</div>
+                                <div class="stat-label">Projects</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">42</div>
+                                <div class="stat-label">Tasks</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">12</div>
+                                <div class="stat-label">Team</div>
+                            </div>
+                        </div>
+                        
+                        <ul class="profile-links">
+                            <li><a href="#profile-info">Profile Information</a></li>
+                            <li><a href="#account-settings">Account Settings</a></li>
+                            <li><a href="#security">Security</a></li>
+                            <li><a href="#notifications">Notifications</a></li>
+                            <li><a href="#billing">Billing</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="profile-content">
+                        <h2 class="profile-info-section">Profile Information</h2>
+                        
+                        <div class="profile-info-item">
+                            <div class="profile-info-label">Full Name</div>
+                            <div class="profile-info-value">John Smith</div>
+                        </div>
+                        
+                        <div class="profile-info-item">
+                            <div class="profile-info-label">Email Address</div>
+                            <div class="profile-info-value">john.smith@example.com</div>
+                        </div>
+                        
+                        <div class="profile-info-item">
+                            <div class="profile-info-label">Phone Number</div>
+                            <div class="profile-info-value">+1 (555) 123-4567</div>
+                        </div>
+                        
+                        <div class="profile-info-item">
+                            <div class="profile-info-label">Position</div>
+                            <div class="profile-info-value">Senior Project Manager</div>
+                        </div>
+                        
+                        <div class="profile-info-item">
+                            <div class="profile-info-label">Department</div>
+                            <div class="profile-info-value">Product Development</div>
+                        </div>
+                        
+                        <div class="profile-info-item">
+                            <div class="profile-info-label">Location</div>
+                            <div class="profile-info-value">San Francisco, CA</div>
+                        </div>
+                        
+                        <div class="profile-info-item">
+                            <div class="profile-info-label">Bio</div>
+                            <div class="profile-info-value">
+                                Experienced project manager with a passion for technology and innovation. Specializing in agile methodologies and cross-functional team leadership.
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary">Edit Profile</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Page -->
+            <div id="settings" class="page">
+                <h1 class="page-title">Settings</h1>
+                
+                <div class="notification notification-success" id="settings-saved" style="display: none;">
+                    Settings saved successfully!
+                </div>
+                
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h2 class="settings-title">Account Settings</h2>
+                        
+                        <div class="form-group">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" id="username" class="form-control" value="johnsmith">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" class="form-control" value="john.smith@example.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="language" class="form-label">Language</label>
+                            <select id="language" class="form-control">
+                                <option value="en" selected>English</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="timezone" class="form-label">Timezone</label>
+                            <select id="timezone" class="form-control">
+                                <option value="pst" selected>Pacific Standard Time (PST)</option>
+                                <option value="mst">Mountain Standard Time (MST)</option>
+                                <option value="cst">Central Standard Time (CST)</option>
+                                <option value="est">Eastern Standard Time (EST)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h2 class="settings-title">Notification Settings</h2>
+                        
+                        <div class="form-switch">
+                            <input type="checkbox" id="email-notifications" checked>
+                            <label for="email-notifications" class="switch-label">Email Notifications</label>
+                        </div>
+                        
+                        <div class="form-switch">
+                            <input type="checkbox" id="push-notifications" checked>
+                            <label for="push-notifications" class="switch-label">Push Notifications</label>
+                        </div>
+                        
+                        <div class="form-switch">
+                            <input type="checkbox" id="sms-notifications">
+                            <label for="sms-notifications" class="switch-label">SMS Notifications</label>
+                        </div>
+                        
+                        <div class="form-switch">
+                            <input type="checkbox" id="task-reminders" checked>
+                            <label for="task-reminders" class="switch-label">Task Reminders</label>
+                        </div>
+                        
+                        <div class="form-switch">
+                            <input type="checkbox" id="project-updates" checked>
+                            <label for="project-updates" class="switch-label">Project Updates</label>
+                        </div>
+                        
+                        <div class="form-switch">
+                            <input type="checkbox" id="team-messages" checked>
+                            <label for="team-messages" class="switch-label">Team Messages</label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h2 class="settings-title">Privacy Settings</h2>
+                        
+                        <div class="form-switch">
+                            <input type="checkbox" id="profile-visibility" checked>
+                            <label for="profile-visibility" class="switch-label">Profile Visibility</label>
+                        </div>
+                        
+                        <div class="form-switch">
+                            <input type="checkbox" id="activity-tracking" checked>
+                            <label for="activity-tracking" class="switch-label">Activity Tracking</label>
+                        </div>
+                        
+                        <div class="form-switch">
+                            <input type="checkbox" id="data-collection" checked>
+                            <label for="data-collection" class="switch-label">Data Collection</label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="data-retention" class="form-label">Data Retention</label>
+                            <select id="data-retention" class="form-control">
+                                <option value="30">30 Days</option>
+                                <option value="90" selected>90 Days</option>
+                                <option value="180">180 Days</option>
+                                <option value="365">1 Year</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <button id="save-settings" class="btn btn-primary">Save Settings</button>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 AppHub. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // SPA Routing
+            const navLinks = document.querySelectorAll('nav a');
+            const pages = document.querySelectorAll('.page');
+            
+            // Function to show a page based on hash
+            function navigateToPage(hash) {
+                const pageId = hash.substring(1); // Remove the # character
+                
+                // Hide all pages
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // Show the selected page
+                const activePage = document.getElementById(pageId);
+                if (activePage) {
+                    activePage.classList.add('active');
+                } else {
+                    // Default to home if page not found
+                    document.getElementById('home').classList.add('active');
+                }
+                
+                // Update active nav link
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === hash) {
+                        link.classList.add('active');
+                    }
+                });
+                
+                // This is the vulnerable line - it directly uses the hash without sanitization
+                // Update page title based on hash
+                updatePageTitle();
+            }
+            
+            // Update page title based on hash
+            function updatePageTitle() {
+                const hash = window.location.hash || '#home';
+                const pageId = hash.substring(1);
+                
+                // Get the page title from the navigation link
+                let pageTitle = 'Home';
+                navLinks.forEach(link => {
+                    if (link.getAttribute('href') === hash) {
+                        pageTitle = link.textContent;
+                    }
+                });
+                
+                // This is the vulnerable part - using innerHTML with user-controlled input (hash)
+                document.getElementById('welcome-message').innerHTML = `Welcome to ${pageTitle} page!`;
+                
+                document.title = `AppHub - ${pageTitle}`;
+            }
+            
+            // Create a hidden welcome message element (for XSS exploitation)
+            const welcomeMessage = document.createElement('div');
+            welcomeMessage.id = 'welcome-message';
+            welcomeMessage.style.display = 'none';
+            document.body.appendChild(welcomeMessage);
+            
+            // Listen for hash changes
+            window.addEventListener('hashchange', function() {
+                navigateToPage(window.location.hash || '#home');
+            });
+            
+            // Initial navigation
+            navigateToPage(window.location.hash || '#home');
+            
+            // Settings page functionality
+            const saveSettingsBtn = document.getElementById('save-settings');
+            const settingsSavedNotification = document.getElementById('settings-saved');
+            
+            if (saveSettingsBtn) {
+                saveSettingsBtn.addEventListener('click', function() {
+                    settingsSavedNotification.style.display = 'block';
+                    setTimeout(() => {
+                        settingsSavedNotification.style.display = 'none';
+                    }, 3000);
+                });
+            }
+            
+            // XSS Success Detection
+            function checkForXSS() {
+                try {
+                    const welcomeMessageContent = welcomeMessage.innerHTML;
+                    if (welcomeMessageContent.includes('script') && welcomeMessageContent.includes('Xpwned')) {
+                        // Success! Lab completed
+                        window.parent.postMessage({
+                            type: 'LAB_COMPLETED',
+                            labId: '3'
+                        }, '*');
+                    }
+                } catch (e) {
+                    console.error('Error checking for XSS:', e);
+                }
+            }
+            
+            // Check for XSS on hash change
+            window.addEventListener('hashchange', checkForXSS);
+            
+            // Also detect success via direct method
+            window.addEventListener('error', function(e) {
+                if (e.message && e.message.includes('Xpwned')) {
+                    window.parent.postMessage({
+                        type: 'LAB_COMPLETED',
+                        labId: '3'
+                    }, '*');
+                }
+            });
+            
+            // Monitor for injected scripts via MutationObserver
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                        for (let i = 0; i < mutation.addedNodes.length; i++) {
+                            const node = mutation.addedNodes[i];
+                            if (node.nodeType === 1 && node.outerHTML && 
+                                node.outerHTML.includes('alert') && 
+                                node.outerHTML.includes('Xpwned')) {
+                                window.parent.postMessage({
+                                    type: 'LAB_COMPLETED',
+                                    labId: '3'
+                                }, '*');
+                            }
+                        }
+                    }
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+    </script>
+</body>
+</html>

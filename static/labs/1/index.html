@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopSecure - Your Trusted Online Store</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        header {
+            background-color: #3c66c4;
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .search-box {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .search-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .search-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .search-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #3c66c4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .search-button:hover {
+            background-color: #2c56b4;
+        }
+        .search-results {
+            margin-top: 2rem;
+        }
+        .result-info {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        .product-card {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .product-image {
+            height: 200px;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-image img {
+            max-height: 180px;
+            max-width: 90%;
+        }
+        .product-info {
+            padding: 1rem;
+        }
+        .product-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .product-price {
+            color: #e63946;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        .product-rating {
+            color: #fca311;
+            margin-bottom: 0.5rem;
+        }
+        .add-to-cart {
+            background-color: #3c66c4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            width: 100%;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .add-to-cart:hover {
+            background-color: #2c56b4;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .nav-link {
+            color: white;
+            text-decoration: none;
+        }
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+        .cart-icon {
+            position: relative;
+        }
+        .cart-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #e63946;
+            color: white;
+            font-size: 0.8rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .footer-section {
+            flex: 1;
+            margin: 1rem;
+            min-width: 200px;
+        }
+        .footer-heading {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            color: white;
+        }
+        .copyright {
+            text-align: center;
+            padding: 1rem 0;
+            background-color: #222;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">ShopSecure</div>
+                <div class="nav-links">
+                    <a href="#" class="nav-link">Home</a>
+                    <a href="#" class="nav-link">Products</a>
+                    <a href="#" class="nav-link">Deals</a>
+                    <a href="#" class="nav-link">Contact</a>
+                    <a href="#" class="nav-link cart-icon">
+                        Cart
+                        <span class="cart-count">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="search-box">
+            <form class="search-form" action="index.html" method="GET">
+                <input type="text" name="search" class="search-input" placeholder="Search for products..." value="">
+                <button type="submit" class="search-button">Search</button>
+            </form>
+        </div>
+
+        <div class="search-results">
+            <div class="result-info">
+                <span id="search-term-display">Showing all products</span>
+            </div>
+            
+            <div class="products">
+                <!-- Product cards will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-heading">ShopSecure</h3>
+                    <p>Your trusted destination for high-quality products at affordable prices.</p>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-heading">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Products</a></li>
+                        <li><a href="#">Deals</a></li>
+                        <li><a href="#">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-heading">Customer Service</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Returns & Refunds</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-heading">Connect With Us</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <div class="container">
+                &copy; 2025 ShopSecure. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get search parameter from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchTerm = urlParams.get('search');
+            
+            // Update search input and display
+            if (searchTerm) {
+                document.querySelector('.search-input').value = searchTerm;
+                document.getElementById('search-term-display').innerHTML = 'Search results for: <strong>' + searchTerm + '</strong>';
+                
+                // This is the vulnerable line - direct reflection of user input without sanitization
+                // In a real web app, you should sanitize user input before inserting it into the HTML
+            }
+            
+            // Generate some dummy products
+            const products = [
+                {
+                    name: 'Wireless Headphones',
+                    price: '$129.99',
+                    rating: 4.5,
+                    image: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNlZWUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmaWxsPSIjYWFhIj5XaXJlbGVzcyBIZWFkcGhvbmVzPC90ZXh0Pjwvc3ZnPg=='
+                },
+                {
+                    name: 'Smart Watch',
+                    price: '$199.99',
+                    rating: 4.2,
+                    image: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNlZWUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmaWxsPSIjYWFhIj5TbWFydCBXYXRjaDwvdGV4dD48L3N2Zz4='
+                },
+                {
+                    name: 'Bluetooth Speaker',
+                    price: '$79.99',
+                    rating: 4.0,
+                    image: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNlZWUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmaWxsPSIjYWFhIj5CbHVldG9vdGggU3BlYWtlcjwvdGV4dD48L3N2Zz4='
+                },
+                {
+                    name: 'Laptop Pro',
+                    price: '$1299.99',
+                    rating: 4.8,
+                    image: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNlZWUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmaWxsPSIjYWFhIj5MYXB0b3AgUHJvPC90ZXh0Pjwvc3ZnPg=='
+                }
+            ];
+            
+            // Filter products based on search term
+            let filteredProducts = products;
+            if (searchTerm) {
+                const searchLower = searchTerm.toLowerCase();
+                filteredProducts = products.filter(p => 
+                    p.name.toLowerCase().includes(searchLower)
+                );
+                
+                // If no results, show a message
+                if (filteredProducts.length === 0) {
+                    document.querySelector('.products').innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                            <p>No products found matching your search.</p>
+                        </div>
+                    `;
+                    return;
+                }
+            }
+            
+            // Render product cards
+            const productsContainer = document.querySelector('.products');
+            filteredProducts.forEach(product => {
+                const stars = '★'.repeat(Math.floor(product.rating)) + 
+                             (product.rating % 1 >= 0.5 ? '½' : '') + 
+                             '☆'.repeat(5 - Math.ceil(product.rating));
+                             
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name}">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">${product.price}</div>
+                        <div class="product-rating">${stars} (${product.rating})</div>
+                        <button class="add-to-cart">Add to Cart</button>
+                    </div>
+                `;
+                productsContainer.appendChild(productCard);
+            });
+            
+            // Add to cart functionality
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function() {
+                    const cartCount = document.querySelector('.cart-count');
+                    cartCount.textContent = parseInt(cartCount.textContent) + 1;
+                    
+                    // Show added to cart confirmation
+                    const productCard = this.closest('.product-card');
+                    const productName = productCard.querySelector('.product-name').textContent;
+                    
+                    alert(`Added ${productName} to your cart!`);
+                });
+            });
+            
+            // Success condition for the XSS lab
+            window.addEventListener('error', function(e) {
+                // Check if error is from an alert function
+                if (e.message && e.message.includes('Xpwned')) {
+                    // Send success message to parent
+                    window.parent.postMessage({
+                        type: 'LAB_COMPLETED',
+                        labId: '1'
+                    }, '*');
+                }
+            });
+            
+            // Alternative success detection using a MutationObserver
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                        for (let i = 0; i < mutation.addedNodes.length; i++) {
+                            const node = mutation.addedNodes[i];
+                            // Check if this is an alert with our success condition
+                            if (node.nodeType === 1 && node.outerHTML && 
+                                node.outerHTML.includes('alert') && 
+                                node.outerHTML.includes('Xpwned')) {
+                                // Success! Lab completed
+                                window.parent.postMessage({
+                                    type: 'LAB_COMPLETED',
+                                    labId: '1'
+                                }, '*');
+                            }
+                        }
+                    }
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+            // Also detect success via console.error and similar methods
+            const originalConsoleError = console.error;
+            console.error = function() {
+                originalConsoleError.apply(console, arguments);
+                
+                // Check if any argument contains our success string
+                for (let i = 0; i < arguments.length; i++) {
+                    if (String(arguments[i]).includes('Xpwned')) {
+                        // Success! Lab completed
+                        window.parent.postMessage({
+                            type: 'LAB_COMPLETED',
+                            labId: '1'
+                        }, '*');
+                        break;
+                    }
+                }
+            };
+        });
+    </script>
+</body>
+</html>

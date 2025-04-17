@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechThoughts - The Tech Blog</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #2e4057;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .logo span.highlight {
+            color: #66d8f5;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: #66d8f5;
+        }
+        .button {
+            background-color: #66d8f5;
+            color: #2e4057;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #4bc0d9;
+        }
+        .main-content {
+            display: flex;
+            margin: 2rem 0;
+            gap: 2rem;
+        }
+        .blog-content {
+            flex: 3;
+        }
+        .sidebar {
+            flex: 1;
+        }
+        .blog-post {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        .blog-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        .blog-title {
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem;
+            color: #2e4057;
+        }
+        .blog-meta {
+            font-size: 0.9rem;
+            color: #777;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ddd;
+        }
+        .blog-body {
+            padding: 1.5rem;
+        }
+        .blog-text {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        .blog-image {
+            width: 100%;
+            height: 300px;
+            background-color: #eee;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 1.2rem;
+        }
+        .comments-section {
+            padding: 1.5rem;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eee;
+        }
+        .comments-heading {
+            font-size: 1.3rem;
+            margin: 0 0 1rem;
+            color: #2e4057;
+        }
+        .comment {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .comment-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        .comment-author {
+            font-weight: bold;
+            color: #2e4057;
+        }
+        .comment-date {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        .comment-text {
+            font-size: 0.95rem;
+        }
+        .comment-form {
+            margin-top: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: inherit;
+        }
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .sidebar-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .sidebar-heading {
+            font-size: 1.3rem;
+            margin: 0 0 1rem;
+            color: #2e4057;
+            border-bottom: 2px solid #66d8f5;
+            padding-bottom: 0.5rem;
+        }
+        .sidebar-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-list li {
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #eee;
+        }
+        .sidebar-list li:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .sidebar-list a {
+            color: #2e4057;
+            text-decoration: none;
+            display: block;
+            transition: color 0.3s;
+        }
+        .sidebar-list a:hover {
+            color: #66d8f5;
+        }
+        .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .tag {
+            background-color: #e9f7fb;
+            color: #2e4057;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            transition: background-color 0.3s;
+        }
+        .tag:hover {
+            background-color: #d0f0f9;
+        }
+        .footer {
+            background-color: #2e4057;
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: 3rem;
+        }
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+        }
+        .footer-heading {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #66d8f5;
+        }
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer-links a:hover {
+            color: white;
+        }
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #3a5070;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">
+                    Tech<span class="highlight">Thoughts</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#" class="nav-link">Home</a>
+                    <a href="#" class="nav-link">Articles</a>
+                    <a href="#" class="nav-link">Categories</a>
+                    <a href="#" class="nav-link">About</a>
+                    <button class="button">Subscribe</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="blog-content">
+                <article class="blog-post">
+                    <header class="blog-header">
+                        <h1 class="blog-title">Understanding Cross-Site Scripting (XSS) Attacks</h1>
+                        <div class="blog-meta">
+                            <div class="author-avatar"></div>
+                            <div>
+                                <div>By Jane Smith</div>
+                                <div>Published April 12, 2025 • 8 min read</div>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="blog-body">
+                        <div class="blog-image">Blog Header Image</div>
+                        <div class="blog-text">
+                            <p>Cross-Site Scripting (XSS) attacks are a type of injection attack where malicious scripts are injected into trusted websites. An attacker uses a web application to send malicious code, generally in the form of a browser side script, to a different end user.</p>
+                            
+                            <p>Flaws that allow these attacks to succeed are quite widespread and occur anywhere a web application uses input from a user within the output it generates without validating or encoding it.</p>
+                            
+                            <h2>Types of XSS Attacks</h2>
+                            
+                            <p><strong>Reflected XSS:</strong> The malicious script comes from the current HTTP request. The vulnerability occurs when user input is immediately returned by a web application in an error message, search result, or any other response that includes some or all of the input provided by the user as part of the request.</p>
+                            
+                            <p><strong>Stored XSS:</strong> The malicious script comes from the website's database. The vulnerability occurs when user input is stored on the target server, such as in a database, in a message forum, visitor log, comment field, etc.</p>
+                            
+                            <p><strong>DOM-based XSS:</strong> The vulnerability occurs in the client-side code rather than the server-side code. DOM-based XSS generally involves server response that contains JavaScript which processes data from an untrusted source in an unsafe way, usually by writing the data to a potentially dangerous sink within the DOM.</p>
+                            
+                            <h2>Preventing XSS Attacks</h2>
+                            
+                            <p>The primary defense against XSS is contextual output encoding/escaping. Encoding should be applied when user-controllable data is inserted into HTML, JavaScript, CSS, or URLs. Other defenses include:</p>
+                            
+                            <ul>
+                                <li>Content Security Policy (CSP)</li>
+                                <li>Use of modern frameworks that escape XSS by design</li>
+                                <li>Input validation and sanitization</li>
+                                <li>HTTPOnly cookies to minimize impact of successful XSS attacks</li>
+                            </ul>
+                            
+                            <p>Developers must ensure all user-supplied input to the application is validated, encoded, or sanitized properly. User input should not be trusted implicitly and should always be handled as potentially malicious.</p>
+                        </div>
+                    </div>
+                    <div class="comments-section">
+                        <h2 class="comments-heading">Comments (3)</h2>
+                        
+                        <div class="success-message" id="comment-success">
+                            Your comment has been posted successfully!
+                        </div>
+                        
+                        <div id="comments-container">
+                            <div class="comment">
+                                <div class="comment-meta">
+                                    <span class="comment-author">Michael Johnson</span>
+                                    <span class="comment-date">April 13, 2025</span>
+                                </div>
+                                <div class="comment-text">
+                                    Great article! I've been implementing CSP on my company's web applications and it's been very effective.
+                                </div>
+                            </div>
+                            
+                            <div class="comment">
+                                <div class="comment-meta">
+                                    <span class="comment-author">Sarah Lee</span>
+                                    <span class="comment-date">April 14, 2025</span>
+                                </div>
+                                <div class="comment-text">
+                                    Could you expand on how modern frameworks like React help prevent XSS? I'm curious about the specific mechanisms they employ.
+                                </div>
+                            </div>
+                            
+                            <div class="comment">
+                                <div class="comment-meta">
+                                    <span class="comment-author">David Cohen</span>
+                                    <span class="comment-date">April 15, 2025</span>
+                                </div>
+                                <div class="comment-text">
+                                    I recently had to deal with an XSS vulnerability in one of our applications. This article would have been useful back then! Bookmarking for future reference.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form class="comment-form" id="comment-form">
+                            <div class="form-group">
+                                <label for="comment-name" class="form-label">Name</label>
+                                <input type="text" id="comment-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="comment-text" class="form-label">Comment</label>
+                                <textarea id="comment-text" class="form-control" required></textarea>
+                            </div>
+                            <button type="submit" class="button">Post Comment</button>
+                        </form>
+                    </div>
+                </article>
+            </div>
+            
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-heading">Popular Articles</h3>
+                    <ul class="sidebar-list">
+                        <li><a href="#">The Future of Quantum Computing</a></li>
+                        <li><a href="#">5G Technology: Promises and Challenges</a></li>
+                        <li><a href="#">Artificial Intelligence in Healthcare</a></li>
+                        <li><a href="#">Blockchain Beyond Cryptocurrency</a></li>
+                        <li><a href="#">Cybersecurity Best Practices for Remote Teams</a></li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3 class="sidebar-heading">Categories</h3>
+                    <ul class="sidebar-list">
+                        <li><a href="#">Cybersecurity</a></li>
+                        <li><a href="#">Artificial Intelligence</a></li>
+                        <li><a href="#">Web Development</a></li>
+                        <li><a href="#">Cloud Computing</a></li>
+                        <li><a href="#">Data Science</a></li>
+                        <li><a href="#">Internet of Things</a></li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3 class="sidebar-heading">Tags</h3>
+                    <div class="tags-list">
+                        <a href="#" class="tag">XSS</a>
+                        <a href="#" class="tag">Security</a>
+                        <a href="#" class="tag">Web Development</a>
+                        <a href="#" class="tag">JavaScript</a>
+                        <a href="#" class="tag">Vulnerabilities</a>
+                        <a href="#" class="tag">Injection</a>
+                        <a href="#" class="tag">OWASP</a>
+                        <a href="#" class="tag">CSP</a>
+                        <a href="#" class="tag">HTML</a>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3 class="sidebar-heading">About the Author</h3>
+                    <p>Jane Smith is a cybersecurity expert with over 10 years of experience in the field. She has worked with numerous Fortune 500 companies to secure their web applications and infrastructure.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-heading">About TechThoughts</h3>
+                    <p>TechThoughts is a leading technology blog dedicated to providing insightful articles and tutorials on various tech topics.</p>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-heading">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Articles</a></li>
+                        <li><a href="#">Categories</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-heading">Connect With Us</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">Instagram</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-heading">Subscribe</h3>
+                    <p>Get the latest articles and updates delivered to your inbox.</p>
+                    <form>
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Your email address">
+                        </div>
+                        <button type="submit" class="button">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 TechThoughts. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const commentForm = document.getElementById('comment-form');
+            const commentsContainer = document.getElementById('comments-container');
+            const successMessage = document.getElementById('comment-success');
+            
+            commentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const nameInput = document.getElementById('comment-name');
+                const textInput = document.getElementById('comment-text');
+                
+                const name = nameInput.value.trim();
+                const text = textInput.value.trim();
+                
+                if (!name || !text) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                // Create new comment element
+                const commentElement = document.createElement('div');
+                commentElement.className = 'comment';
+                
+                // Get current date
+                const now = new Date();
+                const dateStr = `${now.toLocaleString('default', { month: 'long' })} ${now.getDate()}, ${now.getFullYear()}`;
+                
+                // This is the vulnerable part - directly inserting the user input without sanitization
+                commentElement.innerHTML = `
+                    <div class="comment-meta">
+                        <span class="comment-author">${name}</span>
+                        <span class="comment-date">${dateStr}</span>
+                    </div>
+                    <div class="comment-text">
+                        ${text}
+                    </div>
+                `;
+                
+                // Add the new comment to the top of the comments
+                commentsContainer.insertBefore(commentElement, commentsContainer.firstChild);
+                
+                // Show success message
+                successMessage.style.display = 'block';
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 3000);
+                
+                // Clear form
+                nameInput.value = '';
+                textInput.value = '';
+                
+                // Check for XSS success condition
+                if (text.includes('alert') && text.includes('Xpwned')) {
+                    // Signal success to parent window
+                    window.parent.postMessage({
+                        type: 'LAB_COMPLETED',
+                        labId: '2'
+                    }, '*');
+                }
+            });
+            
+            // Additional success detection methods
+            
+            // Listen for XSS alert executions
+            window.addEventListener('error', function(e) {
+                if (e.message && e.message.includes('Xpwned')) {
+                    window.parent.postMessage({
+                        type: 'LAB_COMPLETED',
+                        labId: '2'
+                    }, '*');
+                }
+            });
+            
+            // Monitor for injected scripts via MutationObserver
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                        for (let i = 0; i < mutation.addedNodes.length; i++) {
+                            const node = mutation.addedNodes[i];
+                            if (node.nodeType === 1 && node.outerHTML && 
+                                node.outerHTML.includes('alert') && 
+                                node.outerHTML.includes('Xpwned')) {
+                                window.parent.postMessage({
+                                    type: 'LAB_COMPLETED',
+                                    labId: '2'
+                                }, '*');
+                            }
+                        }
+                    }
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+    </script>
+</body>
+</html>
