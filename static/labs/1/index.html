@@ -383,7 +383,7 @@
             // Success condition for the XSS lab
             window.addEventListener('error', function(e) {
                 // Check if error is from an alert function
-                if (e.message && e.message.includes('Xpwned')) {
+                if (e.message && (e.message.includes('Xpwned') || e.message.includes('script'))) {
                     // Send success message to parent
                     window.parent.postMessage({
                         type: 'LAB_COMPLETED',
@@ -391,6 +391,19 @@
                     }, '*');
                 }
             });
+            
+            // Direct detection for alert functions
+            const originalAlert = window.alert;
+            window.alert = function(message) {
+                if (message && message.includes('Xpwned')) {
+                    // Success! Lab completed
+                    window.parent.postMessage({
+                        type: 'LAB_COMPLETED',
+                        labId: '1'
+                    }, '*');
+                }
+                return originalAlert.apply(this, arguments);
+            };
             
             // Alternative success detection using a MutationObserver
             const observer = new MutationObserver(function(mutations) {

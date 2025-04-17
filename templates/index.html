@@ -26,34 +26,47 @@
             <p class="section-description">Practice with 50 realistic XSS challenges across different categories and difficulty levels</p>
         </div>
         
-        <div class="lab-dashboard" id="lab-dashboard">
-            <div class="dashboard-header">
-                <h3>Your Progress: <span id="progress-display">0/50 labs completed</span></h3>
-                <div class="dashboard-controls">
-                    <div class="filter-container">
-                        <select id="category-filter" class="filter-select">
-                            <option value="all">All Categories</option>
-                            <option value="basic-reflected">Basic Reflected</option>
-                            <option value="dom-based">DOM-based</option>
-                            <option value="advanced">Advanced</option>
-                            <option value="filter-bypass">Filter Bypass</option>
-                            <option value="miscellaneous">Miscellaneous</option>
-                        </select>
-                    </div>
-                    <div class="filter-container">
-                        <select id="difficulty-filter" class="filter-select">
-                            <option value="all">All Difficulties</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                            <option value="Expert">Expert</option>
-                        </select>
-                    </div>
+        <div class="lab-preview">
+            <div class="lab-categories">
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-code"></i></div>
+                    <h3>Basic Reflected XSS</h3>
+                    <p>Learn the fundamentals of finding and exploiting reflected XSS vulnerabilities</p>
+                    <span class="lab-count">10 Labs</span>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-sitemap"></i></div>
+                    <h3>DOM-based XSS</h3>
+                    <p>Explore client-side vulnerabilities that occur in the Document Object Model</p>
+                    <span class="lab-count">10 Labs</span>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-rocket"></i></div>
+                    <h3>Advanced XSS</h3>
+                    <p>Master complex techniques involving CSP bypasses, JSON, and more</p>
+                    <span class="lab-count">10 Labs</span>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-filter"></i></div>
+                    <h3>Filter Bypass</h3>
+                    <p>Learn to bypass various XSS protection mechanisms and filters</p>
+                    <span class="lab-count">10 Labs</span>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-puzzle-piece"></i></div>
+                    <h3>Miscellaneous</h3>
+                    <p>Discover XSS in unusual contexts like iframes, HTTP headers, and more</p>
+                    <span class="lab-count">10 Labs</span>
                 </div>
             </div>
             
-            <div class="lab-cards" id="lab-cards-container">
-                <!-- Lab cards will be dynamically populated here -->
+            <div class="lab-cta">
+                <a href="/dashboard" class="button button-primary">Go to Lab Dashboard</a>
+                <p class="lab-cta-note">Track your progress across all 50 labs</p>
             </div>
         </div>
     </div>

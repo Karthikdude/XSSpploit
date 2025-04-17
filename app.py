@@ -325,6 +325,10 @@ def get_lab_by_id(lab_id):
 def index():
     return render_template('index.html')
 
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
 @app.route('/legal')
 def legal():
     return render_template('legal.html')

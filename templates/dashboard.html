@@ -1,0 +1,412 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">XSSploit Lab Dashboard</h1>
+        <p class="dashboard-subtitle">Track your progress and access all 50 XSS labs</p>
+        <div class="dashboard-user">
+            <div id="user-info">
+                <span id="welcome-message">Welcome, <span id="username-display">User</span>!</span>
+                <span id="progress-display">0/50 labs completed</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dashboard-content">
+        <div class="dashboard-filters">
+            <div class="filter-container">
+                <label for="category-filter">Filter by Category:</label>
+                <select id="category-filter" class="filter-select">
+                    <option value="all">All Categories</option>
+                    <option value="basic-reflected">Basic Reflected</option>
+                    <option value="dom-based">DOM-based</option>
+                    <option value="advanced">Advanced</option>
+                    <option value="filter-bypass">Filter Bypass</option>
+                    <option value="miscellaneous">Miscellaneous</option>
+                </select>
+            </div>
+            <div class="filter-container">
+                <label for="difficulty-filter">Filter by Difficulty:</label>
+                <select id="difficulty-filter" class="filter-select">
+                    <option value="all">All Difficulties</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                    <option value="Expert">Expert</option>
+                </select>
+            </div>
+            <div class="filter-container">
+                <label for="completion-filter">Filter by Completion:</label>
+                <select id="completion-filter" class="filter-select">
+                    <option value="all">All Labs</option>
+                    <option value="completed">Completed</option>
+                    <option value="incomplete">Incomplete</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="lab-cards" id="lab-cards-container">
+            <!-- Lab cards will be dynamically populated here -->
+            <div class="loading-indicator">Loading labs...</div>
+        </div>
+    </div>
+    
+    <div class="dashboard-section">
+        <h2 class="section-title">Leaderboard</h2>
+        <div class="leaderboard-container">
+            <div class="leaderboard-header">
+                <div class="rank-column">Rank</div>
+                <div class="name-column">Name</div>
+                <div class="time-column">Total Time</div>
+                <div class="badge-column">Badge</div>
+            </div>
+            
+            <div class="leaderboard-entries" id="leaderboard-entries">
+                <!-- Leaderboard entries will be dynamically populated here -->
+                <div class="leaderboard-empty" id="leaderboard-empty">
+                    <p>Complete all 50 labs to join the leaderboard!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dashboard-section">
+        <h2 class="section-title">Session Management</h2>
+        <div class="session-controls">
+            <button id="export-session" class="button button-secondary">Export Progress</button>
+            <label for="import-session" class="button button-secondary">Import Progress</label>
+            <input type="file" id="import-session" style="display: none;">
+            <button id="reset-session" class="button button-danger">Reset Progress</button>
+        </div>
+    </div>
+</div>
+
+<!-- Username Modal -->
+<div class="modal" id="username-modal">
+    <div class="modal-content">
+        <h2>Welcome to XSSploit Labs!</h2>
+        <p>Enter your name to track your progress and compete on the leaderboard.</p>
+        <div class="form-group">
+            <input type="text" id="username-input" placeholder="Your name" class="form-control">
+        </div>
+        <button id="username-submit" class="button button-primary">Start Training</button>
+    </div>
+</div>
+
+<!-- Reset Confirmation Modal -->
+<div class="modal" id="reset-confirm-modal">
+    <div class="modal-content">
+        <h2>Reset Progress?</h2>
+        <p>Are you sure you want to reset all progress? This action cannot be undone.</p>
+        <div class="modal-buttons">
+            <button id="reset-confirm" class="button button-danger">Reset</button>
+            <button id="reset-cancel" class="button button-secondary">Cancel</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if user has a username
+    const username = localStorage.getItem('xssploit_username');
+    if (!username) {
+        showNameModal();
+    } else {
+        updateUserDisplay();
+    }
+    
+    // Load labs and leaderboard
+    loadLabs();
+    loadLeaderboard();
+    
+    // Set up event listeners
+    document.getElementById('username-submit').addEventListener('click', function() {
+        const username = document.getElementById('username-input').value.trim();
+        if (username) {
+            localStorage.setItem('xssploit_username', username);
+            hideNameModal();
+            updateUserDisplay();
+        }
+    });
+    
+    document.getElementById('category-filter').addEventListener('change', applyFilters);
+    document.getElementById('difficulty-filter').addEventListener('change', applyFilters);
+    document.getElementById('completion-filter').addEventListener('change', applyFilters);
+    
+    // Session management
+    document.getElementById('export-session').addEventListener('click', exportSession);
+    document.getElementById('import-session').addEventListener('change', importSession);
+    document.getElementById('reset-session').addEventListener('click', function() {
+        document.getElementById('reset-confirm-modal').style.display = 'flex';
+    });
+    
+    document.getElementById('reset-confirm').addEventListener('click', resetSession);
+    document.getElementById('reset-cancel').addEventListener('click', function() {
+        document.getElementById('reset-confirm-modal').style.display = 'none';
+    });
+});
+
+// Load labs from API
+function loadLabs() {
+    fetch('/api/labs')
+        .then(response => response.json())
+        .then(labs => {
+            displayLabs(labs);
+        })
+        .catch(error => {
+            console.error('Error loading labs:', error);
+            document.getElementById('lab-cards-container').innerHTML = `
+                <div class="error-message">
+                    Failed to load labs. Please try again later.
+                </div>
+            `;
+        });
+}
+
+// Display labs in the dashboard
+function displayLabs(labs) {
+    const container = document.getElementById('lab-cards-container');
+    container.innerHTML = '';
+    
+    // Get user progress
+    const progress = JSON.parse(localStorage.getItem('xssploit_progress') || '{}');
+    
+    // Create lab cards
+    labs.forEach(lab => {
+        const labProgress = progress[lab.id] || { completed: false, time: 0 };
+        
+        const card = document.createElement('div');
+        card.className = `lab-card ${labProgress.completed ? 'completed' : ''}`;
+        card.setAttribute('data-category', lab.category);
+        card.setAttribute('data-difficulty', lab.difficulty);
+        card.setAttribute('data-completed', labProgress.completed);
+        
+        card.innerHTML = `
+            <div class="lab-card-header">
+                <span class="lab-number">#${lab.id}</span>
+                <span class="lab-difficulty ${lab.difficulty.toLowerCase()}">${lab.difficulty}</span>
+            </div>
+            <h3 class="lab-card-title">${lab.title}</h3>
+            <div class="lab-card-footer">
+                <span class="lab-category">${lab.category.replace('-', ' ')}</span>
+                ${labProgress.completed ? 
+                    `<span class="lab-completed">Completed in ${formatTime(labProgress.time)}</span>` : 
+                    '<span class="lab-status">Not Completed</span>'}
+            </div>
+        `;
+        
+        // Add click handler to navigate to lab
+        card.addEventListener('click', function() {
+            window.location.href = `/lab/${lab.id}`;
+        });
+        
+        container.appendChild(card);
+    });
+    
+    // Update progress display
+    updateProgressDisplay(labs.length, progress);
+    
+    // Apply initial filters
+    applyFilters();
+}
+
+// Apply filters to lab cards
+function applyFilters() {
+    const selectedCategory = document.getElementById('category-filter').value;
+    const selectedDifficulty = document.getElementById('difficulty-filter').value;
+    const selectedCompletion = document.getElementById('completion-filter').value;
+    
+    const labCards = document.querySelectorAll('.lab-card');
+    
+    labCards.forEach(card => {
+        const category = card.getAttribute('data-category');
+        const difficulty = card.getAttribute('data-difficulty');
+        const completed = card.getAttribute('data-completed') === 'true';
+        
+        const categoryMatch = selectedCategory === 'all' || category === selectedCategory;
+        const difficultyMatch = selectedDifficulty === 'all' || difficulty === selectedDifficulty;
+        const completionMatch = selectedCompletion === 'all' || 
+                               (selectedCompletion === 'completed' && completed) || 
+                               (selectedCompletion === 'incomplete' && !completed);
+        
+        if (categoryMatch && difficultyMatch && completionMatch) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+// Update progress display
+function updateProgressDisplay(totalLabs, progress) {
+    const progressDisplay = document.getElementById('progress-display');
+    let completedCount = 0;
+    
+    // Count completed labs
+    Object.values(progress).forEach(labProgress => {
+        if (labProgress.completed) {
+            completedCount++;
+        }
+    });
+    
+    progressDisplay.textContent = `${completedCount}/${totalLabs} labs completed`;
+}
+
+// Load and display leaderboard
+function loadLeaderboard() {
+    const leaderboardEntries = document.getElementById('leaderboard-entries');
+    const leaderboardEmpty = document.getElementById('leaderboard-empty');
+    
+    // Get leaderboard from localStorage
+    const leaderboard = JSON.parse(localStorage.getItem('xssploit_leaderboard') || '[]');
+    
+    if (leaderboard.length > 0) {
+        leaderboardEmpty.style.display = 'none';
+        
+        // Clear existing entries
+        while (leaderboardEntries.firstChild && leaderboardEntries.firstChild !== leaderboardEmpty) {
+            leaderboardEntries.removeChild(leaderboardEntries.firstChild);
+        }
+        
+        // Add entries
+        leaderboard.forEach((entry, index) => {
+            const entryElement = document.createElement('div');
+            entryElement.className = 'leaderboard-entry';
+            
+            const badge = getBadgeForTime(entry.totalTime);
+            
+            entryElement.innerHTML = `
+                <div class="rank-column">${index + 1}</div>
+                <div class="name-column">${escapeHtml(entry.username)}</div>
+                <div class="time-column">${formatTime(entry.totalTime)}</div>
+                <div class="badge-column"><span class="badge ${badge.toLowerCase()}">${badge}</span></div>
+            `;
+            
+            leaderboardEntries.insertBefore(entryElement, leaderboardEmpty);
+        });
+    } else {
+        leaderboardEmpty.style.display = 'block';
+    }
+}
+
+// Get badge level based on completion time
+function getBadgeForTime(time) {
+    // 50 labs, average of 2 minutes per lab = 100 minutes = 6,000,000 ms is "Gold" standard
+    if (time <= 6000000) return 'Gold';
+    // 50 labs, average of 4 minutes per lab = 200 minutes = 12,000,000 ms is "Silver" standard
+    if (time <= 12000000) return 'Silver';
+    // Everyone else gets Bronze
+    return 'Bronze';
+}
+
+// Format time in milliseconds to HH:MM:SS
+function formatTime(ms) {
+    const seconds = Math.floor((ms / 1000) % 60);
+    const minutes = Math.floor((ms / (1000 * 60)) % 60);
+    const hours = Math.floor(ms / (1000 * 60 * 60));
+    
+    return [
+        hours.toString().padStart(2, '0'),
+        minutes.toString().padStart(2, '0'),
+        seconds.toString().padStart(2, '0')
+    ].join(':');
+}
+
+// Show the username modal
+function showNameModal() {
+    document.getElementById('username-modal').style.display = 'flex';
+}
+
+// Hide the username modal
+function hideNameModal() {
+    document.getElementById('username-modal').style.display = 'none';
+}
+
+// Update UI with username
+function updateUserDisplay() {
+    const username = localStorage.getItem('xssploit_username');
+    if (username) {
+        document.getElementById('username-display').textContent = username;
+    }
+}
+
+// Export session to JSON file
+function exportSession() {
+    const username = localStorage.getItem('xssploit_username') || 'Anonymous';
+    const progress = JSON.parse(localStorage.getItem('xssploit_progress') || '{}');
+    
+    const sessionData = {
+        username: username,
+        progress: progress,
+        exportDate: new Date().toISOString()
+    };
+    
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sessionData, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "xssploit_progress.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+
+// Import session from JSON file
+function importSession(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const sessionData = JSON.parse(e.target.result);
+            
+            // Validate session data
+            if (!sessionData.username || !sessionData.progress) {
+                alert('Invalid session file. Missing required data.');
+                return;
+            }
+            
+            // Import username and progress
+            localStorage.setItem('xssploit_username', sessionData.username);
+            localStorage.setItem('xssploit_progress', JSON.stringify(sessionData.progress));
+            
+            // Update UI
+            updateUserDisplay();
+            loadLabs();
+            
+            alert('Session imported successfully!');
+        } catch (error) {
+            console.error('Error importing session:', error);
+            alert('Failed to import session. Invalid file format.');
+        }
+    };
+    reader.readAsText(file);
+}
+
+// Reset session data
+function resetSession() {
+    localStorage.removeItem('xssploit_progress');
+    
+    // Close modal
+    document.getElementById('reset-confirm-modal').style.display = 'none';
+    
+    // Reload labs
+    loadLabs();
+    
+    alert('Progress has been reset.');
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+</script>
+{% endblock %}
