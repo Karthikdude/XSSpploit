@@ -1,0 +1,172 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<section class="legal-section">
+    <div class="container">
+        <div class="legal-header">
+            <h1>Legal Information</h1>
+            <p class="legal-intro">This page outlines the terms and conditions for using XSSploit, global legal consequences of unauthorized hacking, and ethical hacking guidelines.</p>
+        </div>
+
+        <div class="legal-content">
+            <div id="terms" class="legal-block">
+                <h2>Terms and Conditions</h2>
+                <div class="legal-text">
+                    <p>Welcome to XSSploit, an educational platform for learning about Cross-Site Scripting (XSS) vulnerabilities. By accessing or using XSSploit, you agree to be bound by these Terms and Conditions.</p>
+                    
+                    <h3>1. Educational Purpose</h3>
+                    <p>XSSploit is designed solely for educational and learning purposes. The skills and techniques demonstrated are to be used only within this platform or on systems you have explicit permission to test.</p>
+                    
+                    <h3>2. User Responsibilities</h3>
+                    <p>Users agree to:</p>
+                    <ul>
+                        <li>Use XSSploit solely for educational purposes</li>
+                        <li>Practice techniques only within the platform</li>
+                        <li>Not apply skills learned on unauthorized systems</li>
+                        <li>Respect intellectual property rights</li>
+                        <li>Not distribute malicious code or exploits created using knowledge gained from XSSploit</li>
+                    </ul>
+                    
+                    <h3>3. Disclaimer of Liability</h3>
+                    <p>The creators and operators of XSSploit are not responsible for:</p>
+                    <ul>
+                        <li>Any misuse of skills or knowledge gained from this platform</li>
+                        <li>Legal consequences incurred by users who apply these techniques illegally</li>
+                        <li>Any damages, direct or indirect, resulting from the use or misuse of this platform</li>
+                    </ul>
+                    
+                    <h3>4. Termination of Access</h3>
+                    <p>The operators of XSSploit reserve the right to terminate access for any user suspected of using the platform for malicious purposes or violating these terms and conditions.</p>
+                    
+                    <h3>5. Modifications to Terms</h3>
+                    <p>These terms may be updated at any time without notice. Continued use of XSSploit constitutes acceptance of any modified terms.</p>
+                </div>
+            </div>
+
+            <div id="global-laws" class="legal-block">
+                <h2>Global Legal Consequences of Unauthorized Hacking</h2>
+                <div class="legal-text">
+                    <p>Unauthorized application of hacking techniques, including those learned on this platform, can lead to severe legal consequences worldwide. Below are some of the major laws and regulations pertaining to cybersecurity and unauthorized system access:</p>
+                    
+                    <h3>United States</h3>
+                    <p><strong>Computer Fraud and Abuse Act (CFAA):</strong> Enacted in 1986 and amended multiple times, the CFAA criminalizes unauthorized access to protected computers. Penalties can include:</p>
+                    <ul>
+                        <li>Up to 10 years imprisonment for first offenses</li>
+                        <li>Up to 20 years for repeat offenses</li>
+                        <li>Substantial fines</li>
+                        <li>Civil liability for damages</li>
+                    </ul>
+                    
+                    <h3>United Kingdom</h3>
+                    <p><strong>Computer Misuse Act 1990:</strong> This act criminalizes unauthorized access to computer material, unauthorized access with intent to commit further offenses, and unauthorized modification of computer material. Penalties include:</p>
+                    <ul>
+                        <li>Up to 2 years imprisonment for unauthorized access</li>
+                        <li>Up to 10 years for unauthorized modification</li>
+                        <li>Fines varying with severity</li>
+                    </ul>
+                    
+                    <h3>European Union</h3>
+                    <p><strong>General Data Protection Regulation (GDPR):</strong> While primarily focused on data protection, the GDPR includes provisions related to data breaches that could result from hacking activities. Violations can lead to:</p>
+                    <ul>
+                        <li>Fines up to €20 million or 4% of global annual revenue, whichever is higher</li>
+                        <li>Legal action from affected individuals</li>
+                        <li>Reputational damage</li>
+                    </ul>
+                    
+                    <h3>Canada</h3>
+                    <p><strong>Criminal Code Section 342.1:</strong> This section addresses unauthorized use of computers and related offenses. Penalties include:</p>
+                    <ul>
+                        <li>Up to 10 years imprisonment</li>
+                        <li>Fines determined by the court</li>
+                    </ul>
+                    
+                    <h3>Australia</h3>
+                    <p><strong>Cybercrime Act 2001:</strong> This act criminalizes unauthorized access to restricted data and impairment of electronic communications. Penalties include:</p>
+                    <ul>
+                        <li>Up to 2 years imprisonment for unauthorized access</li>
+                        <li>Up to 10 years for serious computer offenses</li>
+                        <li>Substantial fines</li>
+                    </ul>
+                    
+                    <h3>India</h3>
+                    <p><strong>Information Technology Act 2000:</strong> This act addresses various cyber crimes including unauthorized access and data theft. Penalties include:</p>
+                    <ul>
+                        <li>Up to 3 years imprisonment for unauthorized access</li>
+                        <li>Up to 5 years for data theft</li>
+                        <li>Fines up to ₹5,00,000</li>
+                    </ul>
+                    
+                    <p class="legal-warning">This is not an exhaustive list of all applicable laws. Many countries have specific legislation addressing cybercrime, and penalties can vary significantly by jurisdiction, intent, and impact of the unauthorized access.</p>
+                </div>
+            </div>
+
+            <div id="ethical-hacking" class="legal-block">
+                <h2>Ethical Hacking Terms</h2>
+                <div class="legal-text">
+                    <p>Ethical hacking, also known as penetration testing or white-hat hacking, involves identifying and fixing security vulnerabilities before malicious actors can exploit them. To practice ethical hacking, you must adhere to these principles:</p>
+                    
+                    <h3>1. Authorized Access Only</h3>
+                    <p>Only test systems for which you have explicit written permission. This includes:</p>
+                    <ul>
+                        <li>Systems you own</li>
+                        <li>Systems covered by a formal penetration testing agreement</li>
+                        <li>Public bug bounty programs with clearly defined scope</li>
+                    </ul>
+                    
+                    <h3>2. Scope Limitations</h3>
+                    <p>Respect the defined boundaries of testing, including:</p>
+                    <ul>
+                        <li>Only testing specified systems</li>
+                        <li>Adhering to any time limitations</li>
+                        <li>Following designated testing methodologies</li>
+                        <li>Avoiding denial-of-service attacks unless explicitly permitted</li>
+                    </ul>
+                    
+                    <h3>3. Responsible Disclosure</h3>
+                    <p>When vulnerabilities are discovered:</p>
+                    <ul>
+                        <li>Report findings directly to the system owner/operator</li>
+                        <li>Provide sufficient information to understand and fix the vulnerability</li>
+                        <li>Allow reasonable time for patching before any public disclosure</li>
+                        <li>Never exploit vulnerabilities for personal gain</li>
+                    </ul>
+                    
+                    <h3>4. Data Protection</h3>
+                    <p>Maintain confidentiality and integrity of data:</p>
+                    <ul>
+                        <li>Do not exfiltrate sensitive data</li>
+                        <li>Minimize access to personal information</li>
+                        <li>Securely store any data collected during testing</li>
+                        <li>Delete all collected data after testing is complete</li>
+                    </ul>
+                    
+                    <h3>5. Continuous Education</h3>
+                    <p>Commit to ongoing learning about:</p>
+                    <ul>
+                        <li>Current security vulnerabilities and exploits</li>
+                        <li>Defensive techniques and best practices</li>
+                        <li>Legal and ethical frameworks for security testing</li>
+                    </ul>
+                    
+                    <h3>6. Documentation and Transparency</h3>
+                    <p>Maintain detailed records of:</p>
+                    <ul>
+                        <li>Testing activities and methodologies</li>
+                        <li>Discovered vulnerabilities</li>
+                        <li>All communications with system owners</li>
+                        <li>Any accidental impacts or system disruptions</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="legal-acknowledgment">
+                <h2>Acknowledgment</h2>
+                <p>By using XSSploit, you acknowledge that you have read, understood, and agree to these terms and conditions, legal considerations, and ethical hacking guidelines. You accept that any misuse of the knowledge gained from this platform is solely your responsibility.</p>
+                <div class="legal-buttons">
+                    <a href="/" class="btn btn-primary">Return to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

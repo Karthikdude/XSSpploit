@@ -1,0 +1,277 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section id="hero" class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1>XSSploit Practice Platform</h1>
+            <p class="subtitle">Master XSS Vulnerabilities Safely. Developed by Karthik S Sathyan</p>
+            <div class="hero-buttons">
+                <button id="start-labs-btn" class="btn btn-primary">Access Lab Dashboard</button>
+            </div>
+            <div class="disclaimer">
+                <p><i class="fas fa-exclamation-circle"></i> Educational use only. <a href="/legal">See legal terms</a> for usage guidelines and unauthorized usage consequences.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Name Input Modal -->
+<div id="name-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Create Your Session</h2>
+        <p>Enter your name to start tracking your progress. This will be used for the leaderboard if you complete all labs.</p>
+        <form id="name-form">
+            <div class="form-group">
+                <label for="username">Your Name:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group checkbox">
+                <input type="checkbox" id="terms-checkbox" required>
+                <label for="terms-checkbox">I have read and agree to the <a href="/legal" target="_blank">Terms and Conditions</a></label>
+            </div>
+            <button type="submit" class="btn btn-primary">Start Labs</button>
+            <button type="button" id="anonymous-btn" class="btn btn-secondary">Stay Anonymous</button>
+        </form>
+    </div>
+</div>
+
+<!-- Labs Overview Section -->
+<section id="labs" class="labs-section">
+    <div class="container">
+        <h2 class="section-title">XSS Labs Overview</h2>
+        <p class="section-description">Explore 50 realistic, hands-on labs categorized by XSS vulnerability types</p>
+
+        <div class="lab-categories">
+            <div class="category">
+                <div class="category-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>Basic Reflected XSS</h3>
+                <p>Learn fundamental reflected XSS techniques through search forms, URL parameters, HTTP headers and more.</p>
+                <div class="example-labs">
+                    <span class="lab-badge">Query Parameters</span>
+                    <span class="lab-badge">Form Submission</span>
+                    <span class="lab-badge">HTTP Headers</span>
+                </div>
+            </div>
+            <div class="category">
+                <div class="category-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3>DOM-based XSS</h3>
+                <p>Discover vulnerabilities in client-side JavaScript through innerHTML, eval(), event handlers and other techniques.</p>
+                <div class="example-labs">
+                    <span class="lab-badge">innerHTML</span>
+                    <span class="lab-badge">document.write</span>
+                    <span class="lab-badge">JavaScript Events</span>
+                </div>
+            </div>
+            <div class="category">
+                <div class="category-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Advanced Techniques</h3>
+                <p>Master complex XSS scenarios involving CSP bypasses, JSON-based vulnerabilities, and modern HTML5 features.</p>
+                <div class="example-labs">
+                    <span class="lab-badge">CSP Bypass</span>
+                    <span class="lab-badge">JSON Reflection</span>
+                    <span class="lab-badge">SVG Scripts</span>
+                </div>
+            </div>
+            <div class="category">
+                <div class="category-icon">
+                    <i class="fas fa-unlock-alt"></i>
+                </div>
+                <h3>Filter Bypass Challenges</h3>
+                <p>Learn to circumvent security filters using encoding techniques, case manipulation, and alternative payload formats.</p>
+                <div class="example-labs">
+                    <span class="lab-badge">Blacklist Bypass</span>
+                    <span class="lab-badge">Encoding Tricks</span>
+                    <span class="lab-badge">Style Injection</span>
+                </div>
+            </div>
+            <div class="category">
+                <div class="category-icon">
+                    <i class="fas fa-puzzle-piece"></i>
+                </div>
+                <h3>Miscellaneous</h3>
+                <p>Explore unique XSS vectors involving iframes, service workers, HTTP response manipulation, and more.</p>
+                <div class="example-labs">
+                    <span class="lab-badge">iframe Injection</span>
+                    <span class="lab-badge">PWA Manifest</span>
+                    <span class="lab-badge">CSS Injection</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Lab Dashboard Section (initially hidden) -->
+<section id="lab-dashboard" class="lab-dashboard-section" style="display: none;">
+    <div class="container">
+        <div class="dashboard-header">
+            <h2>XSS Lab Dashboard</h2>
+            <div class="user-info">
+                <span>Welcome, <span id="user-display-name">User</span></span>
+                <span class="session-controls">
+                    <button id="save-session-btn" class="btn btn-small">Save Session</button>
+                    <button id="load-session-btn" class="btn btn-small">Load Session</button>
+                    <button id="clear-session-btn" class="btn btn-small btn-danger">Forget Session</button>
+                </span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-stats">
+                    <div class="stat">
+                        <span class="stat-label">Completed:</span>
+                        <span id="completed-count">0</span>/50
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Total Time:</span>
+                        <span id="total-time">00:00:00</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div id="progress-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lab-tabs">
+            <button class="tab-btn active" data-category="basic-reflected">Basic Reflected XSS</button>
+            <button class="tab-btn" data-category="dom-based">DOM-based XSS</button>
+            <button class="tab-btn" data-category="advanced">Advanced Techniques</button>
+            <button class="tab-btn" data-category="filter-bypass">Filter Bypass</button>
+            <button class="tab-btn" data-category="miscellaneous">Miscellaneous</button>
+        </div>
+
+        <div class="labs-container">
+            <!-- Lab list will be populated by JavaScript -->
+            <div id="lab-list" class="lab-list">
+                <!-- This will be populated dynamically -->
+            </div>
+
+            <!-- Lab content container -->
+            <div id="lab-content" class="lab-content">
+                <div class="lab-instructions">
+                    <h3 id="current-lab-title">Select a lab to begin</h3>
+                    <p id="current-lab-description">Choose a lab from the list to view its instructions and challenge.</p>
+                    <div id="current-lab-hints" class="hint-container">
+                        <button id="hint-toggle" class="btn btn-small">Show Hint</button>
+                        <div id="hint-content" class="hint-content" style="display: none;"></div>
+                    </div>
+                    <div class="lab-timer">
+                        <span>Time: <span id="lab-timer-display">00:00:00</span></span>
+                    </div>
+                </div>
+                
+                <div id="lab-frame-container" class="lab-frame-container">
+                    <iframe id="lab-frame" sandbox="allow-scripts allow-same-origin" class="lab-frame"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Leaderboard Section -->
+<section id="leaderboard" class="leaderboard-section">
+    <div class="container">
+        <h2 class="section-title">Leaderboard</h2>
+        <p class="section-description">Top players who completed all 50 labs, ranked by total time</p>
+        
+        <div class="leaderboard-container">
+            <div class="leaderboard-controls">
+                <div class="sort-options">
+                    <span>Sort by:</span>
+                    <button class="sort-btn active" data-sort="time">Time</button>
+                    <button class="sort-btn" data-sort="name">Name</button>
+                </div>
+                <button id="refresh-leaderboard" class="btn btn-small"><i class="fas fa-sync-alt"></i> Refresh</button>
+            </div>
+            
+            <div class="leaderboard-table">
+                <div class="leaderboard-header">
+                    <div class="rank">Rank</div>
+                    <div class="name">Name</div>
+                    <div class="time">Time</div>
+                    <div class="badge">Badge</div>
+                </div>
+                <div id="leaderboard-entries" class="leaderboard-entries">
+                    <!-- Will be populated by JavaScript -->
+                    <div class="empty-state">
+                        <p>No entries yet. Be the first to complete all labs!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="about-section">
+    <div class="container">
+        <h2 class="section-title">About XSSploit</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>XSSploit is an educational platform designed to help security enthusiasts, developers, and cybersecurity professionals understand and practice Cross-Site Scripting (XSS) vulnerabilities in a safe, controlled environment.</p>
+                <p>Through 50 realistic labs that mimic real-world scenarios, users can develop skills to identify, exploit, and ultimately prevent XSS vulnerabilities in web applications.</p>
+                <p>Created by <strong>Karthik S Sathyan</strong>, this platform serves as a learning resource for ethical hacking and web security education.</p>
+                <div class="about-cta">
+                    <button id="about-start-btn" class="btn btn-primary">Start Learning Now</button>
+                </div>
+            </div>
+            <div class="about-features">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Educational First</h3>
+                    <p>Built specifically for learning XSS concepts through practical application</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Ethical Hacking</h3>
+                    <p>Practice security techniques in a responsible, legal environment</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3>Track Progress</h3>
+                    <p>Monitor your improvement and compete for top leaderboard positions</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Success Modal -->
+<div id="success-modal" class="modal">
+    <div class="modal-content success-modal">
+        <span class="close">&times;</span>
+        <div class="success-header">
+            <i class="fas fa-check-circle"></i>
+            <h2>Challenge Completed!</h2>
+        </div>
+        <div class="success-details">
+            <p>You've successfully completed: <span id="completed-lab-title">Lab Title</span></p>
+            <p>Time taken: <span id="completed-lab-time">00:00:00</span></p>
+        </div>
+        <div class="success-actions">
+            <button id="next-lab-btn" class="btn btn-primary">Next Lab</button>
+            <button id="back-to-list-btn" class="btn btn-secondary">Back to List</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/labs.js') }}"></script>
+<script src="{{ url_for('static', filename='js/session.js') }}"></script>
+<script src="{{ url_for('static', filename='js/leaderboard.js') }}"></script>
+{% endblock %}

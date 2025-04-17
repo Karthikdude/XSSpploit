@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSSploit - Practice XSS Vulnerabilities Safely</title>
+    <meta name="description" content="Educational platform for learning about XSS vulnerabilities through realistic labs">
+    
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:;">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <a href="/">
+                        <span class="logo-text">XSS<span class="highlight">ploit</span></span>
+                    </a>
+                </div>
+                <div class="nav-links">
+                    <ul>
+                        <li><a href="/#hero">Home</a></li>
+                        <li><a href="/#labs">Labs</a></li>
+                        <li><a href="/#leaderboard">Leaderboard</a></li>
+                        <li><a href="/#about">About</a></li>
+                        <li><a href="/legal">Legal</a></li>
+                    </ul>
+                </div>
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">XSS<span class="highlight">ploit</span></span>
+                    <p>Master XSS vulnerabilities safely and ethically.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            <li><a href="/#hero">Home</a></li>
+                            <li><a href="/#labs">Labs</a></li>
+                            <li><a href="/#leaderboard">Leaderboard</a></li>
+                            <li><a href="/#about">About</a></li>
+                        </ul>
+                    </div>
+                    <div class="link-group">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="/legal">Terms & Conditions</a></li>
+                            <li><a href="/legal#ethical-hacking">Ethical Hacking</a></li>
+                            <li><a href="/legal#global-laws">Global Laws</a></li>
+                        </ul>
+                    </div>
+                    <div class="link-group">
+                        <h4>Contact</h4>
+                        <ul>
+                            <li><a href="mailto:contact@xssploit.example">Email</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 XSSploit. Developed by Karthik S Sathyan. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Common JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
