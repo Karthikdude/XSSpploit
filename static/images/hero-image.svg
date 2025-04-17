@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#e9f0fc" rx="10" ry="10"/>
+  
+  <!-- Server -->
+  <rect x="100" y="120" width="120" height="180" fill="#ffffff" stroke="#2c3e50" stroke-width="2" rx="5" ry="5"/>
+  <rect x="110" y="130" width="100" height="20" fill="#3c66c4" rx="3" ry="3"/>
+  <rect x="110" y="160" width="100" height="20" fill="#3c66c4" rx="3" ry="3"/>
+  <rect x="110" y="190" width="100" height="20" fill="#3c66c4" rx="3" ry="3"/>
+  <rect x="110" y="220" width="100" height="20" fill="#3c66c4" rx="3" ry="3"/>
+  <rect x="110" y="250" width="100" height="20" fill="#3c66c4" rx="3" ry="3"/>
+  <rect x="120" y="280" width="10" height="10" fill="#e74c3c" rx="5" ry="5"/>
+  <rect x="140" y="280" width="10" height="10" fill="#f1c40f" rx="5" ry="5"/>
+  <rect x="160" y="280" width="10" height="10" fill="#2ecc71" rx="5" ry="5"/>
+  
+  <!-- Browser Window -->
+  <rect x="380" y="120" width="160" height="180" fill="#ffffff" stroke="#2c3e50" stroke-width="2" rx="5" ry="5"/>
+  <rect x="380" y="120" width="160" height="30" fill="#e6e6e6" stroke="#2c3e50" stroke-width="2" rx="5" ry="5"/>
+  <circle cx="395" cy="135" r="5" fill="#e74c3c"/>
+  <circle cx="415" cy="135" r="5" fill="#f1c40f"/>
+  <circle cx="435" cy="135" r="5" fill="#2ecc71"/>
+  <rect x="380" y="150" width="160" height="1" fill="#e0e0e0"/>
+  <rect x="395" y="165" width="130" height="15" fill="#f0f0f0" rx="3" ry="3"/>
+  <rect x="395" y="195" width="130" height="10" fill="#e6efff" rx="2" ry="2"/>
+  <rect x="395" y="215" width="130" height="10" fill="#e6efff" rx="2" ry="2"/>
+  <rect x="395" y="235" width="130" height="10" fill="#e6efff" rx="2" ry="2"/>
+  <rect x="395" y="255" width="90" height="20" fill="#3c66c4" rx="3" ry="3"/>
+  
+  <!-- Connection Lines with XSS Code -->
+  <path d="M220 180 Q 280 140, 380 160" fill="none" stroke="#e74c3c" stroke-width="3" stroke-dasharray="5,5"/>
+  <path d="M220 220 Q 280 250, 380 230" fill="none" stroke="#e74c3c" stroke-width="3" stroke-dasharray="5,5"/>
+  
+  <!-- XSS Symbols -->
+  <text x="280" y="150" font-family="monospace" font-size="14" fill="#e74c3c" font-weight="bold">&lt;script&gt;alert('XSS')&lt;/script&gt;</text>
+  <text x="280" y="250" font-family="monospace" font-size="14" fill="#e74c3c" font-weight="bold">&lt;img src="x" onerror="alert('XSS')"&gt;</text>
+  
+  <!-- Shield -->
+  <rect x="260" y="180" width="80" height="80" fill="#2ecc71" rx="5" ry="5" opacity="0.3"/>
+  <path d="M300 180 L340 200 L300 260 L260 200 Z" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/>
+  <text x="290" y="225" font-family="Arial" font-size="20" fill="#ffffff" font-weight="bold">XSS</text>
+  
+  <!-- Alert Icon -->
+  <circle cx="465" cy="80" r="25" fill="#f1c40f"/>
+  <text x="458" y="88" font-family="Arial" font-size="24" fill="#ffffff" font-weight="bold">!</text>
+  
+  <!-- Lock Icon -->
+  <rect x="135" y="80" width="30" height="20" fill="#3c66c4" rx="2" ry="2"/>
+  <rect x="140" y="65" width="20" height="15" fill="#3c66c4" rx="5" ry="5"/>
+  <circle cx="150" cy="75" r="5" fill="#ffffff"/>
+  
+  <!-- Title -->
+  <text x="300" y="40" font-family="Arial" font-size="24" fill="#2c3e50" font-weight="bold" text-anchor="middle">Cross-Site Scripting (XSS) Protection</text>
+  <text x="300" y="70" font-family="Arial" font-size="16" fill="#7f8c8d" text-anchor="middle">Learn to identify, exploit, and defend against XSS vulnerabilities</text>
+</svg>

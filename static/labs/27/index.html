@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Lab 27</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background-color: #f4f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #3c66c4;
+            margin-top: 0;
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .notice {
+            background-color: #fff3cd;
+            padding: 1rem;
+            border-left: 4px solid #ffc107;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>XSS Lab #27</h1>
+        <div class="notice">
+            <p>This is a placeholder for lab #27: XSS via Base64-Encoded Payload Injection</p>
+            <p>To solve this lab, you'll need to insert code that displays an alert with the text "Xpwned".</p>
+        </div>
+        
+        <div id="lab-content">
+            <p>Lab content placeholder. For a complete implementation, replace this with the actual lab content.</p>
+        </div>
+    </div>
+
+    <script>
+        // Minimal success detection script for the lab
+        window.addEventListener('error', function(e) {
+            if (e.message && e.message.includes('Xpwned')) {
+                window.parent.postMessage({
+                    type: 'LAB_COMPLETED',
+                    labId: '27'
+                }, '*');
+            }
+        });
+        
+        // Success detection via DOM mutations
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                    for (let i = 0; i < mutation.addedNodes.length; i++) {
+                        const node = mutation.addedNodes[i];
+                        if (node.nodeType === 1 && node.outerHTML && 
+                            node.outerHTML.includes('alert') && 
+                            node.outerHTML.includes('Xpwned')) {
+                            window.parent.postMessage({
+                                type: 'LAB_COMPLETED',
+                                labId: '27'
+                            }, '*');
+                        }
+                    }
+                }
+            });
+        });
+        
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    </script>
+</body>
+</html>

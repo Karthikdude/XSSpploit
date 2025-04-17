@@ -1,175 +1,59 @@
-{% extends 'layout.html' %}
+{% extends "layout.html" %}
 
 {% block content %}
 <!-- Hero Section -->
 <section id="hero" class="hero-section">
     <div class="container">
         <div class="hero-content">
-            <h1>XSSploit Practice Platform</h1>
-            <p class="subtitle">Master XSS Vulnerabilities Safely. Developed by Karthik S Sathyan</p>
+            <h1 class="hero-title">Master XSS<span class="text-highlight">ploit</span></h1>
+            <p class="hero-subtitle">Learn to identify, exploit, and protect against Cross-Site Scripting vulnerabilities</p>
             <div class="hero-buttons">
-                <button id="start-labs-btn" class="btn btn-primary">Access Lab Dashboard</button>
+                <a href="#labs" class="button button-primary">Start Learning</a>
+                <a href="#about" class="button button-secondary">Learn More</a>
             </div>
-            <div class="disclaimer">
-                <p><i class="fas fa-exclamation-circle"></i> Educational use only. <a href="/legal">See legal terms</a> for usage guidelines and unauthorized usage consequences.</p>
-            </div>
+        </div>
+        <div class="hero-image">
+            <img src="{{ url_for('static', filename='images/hero-image.svg') }}" alt="XSS Security Concept">
         </div>
     </div>
 </section>
 
-<!-- Name Input Modal -->
-<div id="name-modal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Create Your Session</h2>
-        <p>Enter your name to start tracking your progress. This will be used for the leaderboard if you complete all labs.</p>
-        <form id="name-form">
-            <div class="form-group">
-                <label for="username">Your Name:</label>
-                <input type="text" id="username" name="username" placeholder="Enter your name" required>
-            </div>
-            <div class="form-group checkbox">
-                <input type="checkbox" id="terms-checkbox" required>
-                <label for="terms-checkbox">I have read and agree to the <a href="/legal" target="_blank">Terms and Conditions</a></label>
-            </div>
-            <button type="submit" class="btn btn-primary">Start Labs</button>
-            <button type="button" id="anonymous-btn" class="btn btn-secondary">Stay Anonymous</button>
-        </form>
-    </div>
-</div>
-
-<!-- Labs Overview Section -->
+<!-- Labs Section -->
 <section id="labs" class="labs-section">
     <div class="container">
-        <h2 class="section-title">XSS Labs Overview</h2>
-        <p class="section-description">Explore 50 realistic, hands-on labs categorized by XSS vulnerability types</p>
-
-        <div class="lab-categories">
-            <div class="category">
-                <div class="category-icon">
-                    <i class="fas fa-search"></i>
-                </div>
-                <h3>Basic Reflected XSS</h3>
-                <p>Learn fundamental reflected XSS techniques through search forms, URL parameters, HTTP headers and more.</p>
-                <div class="example-labs">
-                    <span class="lab-badge">Query Parameters</span>
-                    <span class="lab-badge">Form Submission</span>
-                    <span class="lab-badge">HTTP Headers</span>
-                </div>
-            </div>
-            <div class="category">
-                <div class="category-icon">
-                    <i class="fas fa-code"></i>
-                </div>
-                <h3>DOM-based XSS</h3>
-                <p>Discover vulnerabilities in client-side JavaScript through innerHTML, eval(), event handlers and other techniques.</p>
-                <div class="example-labs">
-                    <span class="lab-badge">innerHTML</span>
-                    <span class="lab-badge">document.write</span>
-                    <span class="lab-badge">JavaScript Events</span>
-                </div>
-            </div>
-            <div class="category">
-                <div class="category-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <h3>Advanced Techniques</h3>
-                <p>Master complex XSS scenarios involving CSP bypasses, JSON-based vulnerabilities, and modern HTML5 features.</p>
-                <div class="example-labs">
-                    <span class="lab-badge">CSP Bypass</span>
-                    <span class="lab-badge">JSON Reflection</span>
-                    <span class="lab-badge">SVG Scripts</span>
-                </div>
-            </div>
-            <div class="category">
-                <div class="category-icon">
-                    <i class="fas fa-unlock-alt"></i>
-                </div>
-                <h3>Filter Bypass Challenges</h3>
-                <p>Learn to circumvent security filters using encoding techniques, case manipulation, and alternative payload formats.</p>
-                <div class="example-labs">
-                    <span class="lab-badge">Blacklist Bypass</span>
-                    <span class="lab-badge">Encoding Tricks</span>
-                    <span class="lab-badge">Style Injection</span>
-                </div>
-            </div>
-            <div class="category">
-                <div class="category-icon">
-                    <i class="fas fa-puzzle-piece"></i>
-                </div>
-                <h3>Miscellaneous</h3>
-                <p>Explore unique XSS vectors involving iframes, service workers, HTTP response manipulation, and more.</p>
-                <div class="example-labs">
-                    <span class="lab-badge">iframe Injection</span>
-                    <span class="lab-badge">PWA Manifest</span>
-                    <span class="lab-badge">CSS Injection</span>
-                </div>
-            </div>
+        <div class="section-header">
+            <h2 class="section-title">XSS Labs</h2>
+            <p class="section-description">Practice with 50 realistic XSS challenges across different categories and difficulty levels</p>
         </div>
-    </div>
-</section>
-
-<!-- Lab Dashboard Section (initially hidden) -->
-<section id="lab-dashboard" class="lab-dashboard-section" style="display: none;">
-    <div class="container">
-        <div class="dashboard-header">
-            <h2>XSS Lab Dashboard</h2>
-            <div class="user-info">
-                <span>Welcome, <span id="user-display-name">User</span></span>
-                <span class="session-controls">
-                    <button id="save-session-btn" class="btn btn-small">Save Session</button>
-                    <button id="load-session-btn" class="btn btn-small">Load Session</button>
-                    <button id="clear-session-btn" class="btn btn-small btn-danger">Forget Session</button>
-                </span>
-            </div>
-            <div class="progress-container">
-                <div class="progress-stats">
-                    <div class="stat">
-                        <span class="stat-label">Completed:</span>
-                        <span id="completed-count">0</span>/50
+        
+        <div class="lab-dashboard" id="lab-dashboard">
+            <div class="dashboard-header">
+                <h3>Your Progress: <span id="progress-display">0/50 labs completed</span></h3>
+                <div class="dashboard-controls">
+                    <div class="filter-container">
+                        <select id="category-filter" class="filter-select">
+                            <option value="all">All Categories</option>
+                            <option value="basic-reflected">Basic Reflected</option>
+                            <option value="dom-based">DOM-based</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="filter-bypass">Filter Bypass</option>
+                            <option value="miscellaneous">Miscellaneous</option>
+                        </select>
                     </div>
-                    <div class="stat">
-                        <span class="stat-label">Total Time:</span>
-                        <span id="total-time">00:00:00</span>
+                    <div class="filter-container">
+                        <select id="difficulty-filter" class="filter-select">
+                            <option value="all">All Difficulties</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                            <option value="Expert">Expert</option>
+                        </select>
                     </div>
-                </div>
-                <div class="progress-bar">
-                    <div id="progress-fill" style="width: 0%;"></div>
                 </div>
             </div>
-        </div>
-
-        <div class="lab-tabs">
-            <button class="tab-btn active" data-category="basic-reflected">Basic Reflected XSS</button>
-            <button class="tab-btn" data-category="dom-based">DOM-based XSS</button>
-            <button class="tab-btn" data-category="advanced">Advanced Techniques</button>
-            <button class="tab-btn" data-category="filter-bypass">Filter Bypass</button>
-            <button class="tab-btn" data-category="miscellaneous">Miscellaneous</button>
-        </div>
-
-        <div class="labs-container">
-            <!-- Lab list will be populated by JavaScript -->
-            <div id="lab-list" class="lab-list">
-                <!-- This will be populated dynamically -->
-            </div>
-
-            <!-- Lab content container -->
-            <div id="lab-content" class="lab-content">
-                <div class="lab-instructions">
-                    <h3 id="current-lab-title">Select a lab to begin</h3>
-                    <p id="current-lab-description">Choose a lab from the list to view its instructions and challenge.</p>
-                    <div id="current-lab-hints" class="hint-container">
-                        <button id="hint-toggle" class="btn btn-small">Show Hint</button>
-                        <div id="hint-content" class="hint-content" style="display: none;"></div>
-                    </div>
-                    <div class="lab-timer">
-                        <span>Time: <span id="lab-timer-display">00:00:00</span></span>
-                    </div>
-                </div>
-                
-                <div id="lab-frame-container" class="lab-frame-container">
-                    <iframe id="lab-frame" sandbox="allow-scripts allow-same-origin" class="lab-frame"></iframe>
-                </div>
+            
+            <div class="lab-cards" id="lab-cards-container">
+                <!-- Lab cards will be dynamically populated here -->
             </div>
         </div>
     </div>
@@ -178,31 +62,23 @@
 <!-- Leaderboard Section -->
 <section id="leaderboard" class="leaderboard-section">
     <div class="container">
-        <h2 class="section-title">Leaderboard</h2>
-        <p class="section-description">Top players who completed all 50 labs, ranked by total time</p>
+        <div class="section-header">
+            <h2 class="section-title">Leaderboard</h2>
+            <p class="section-description">See who has mastered all challenges in record time</p>
+        </div>
         
         <div class="leaderboard-container">
-            <div class="leaderboard-controls">
-                <div class="sort-options">
-                    <span>Sort by:</span>
-                    <button class="sort-btn active" data-sort="time">Time</button>
-                    <button class="sort-btn" data-sort="name">Name</button>
-                </div>
-                <button id="refresh-leaderboard" class="btn btn-small"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <div class="leaderboard-header">
+                <div class="rank-column">Rank</div>
+                <div class="name-column">Name</div>
+                <div class="time-column">Total Time</div>
+                <div class="badge-column">Badge</div>
             </div>
             
-            <div class="leaderboard-table">
-                <div class="leaderboard-header">
-                    <div class="rank">Rank</div>
-                    <div class="name">Name</div>
-                    <div class="time">Time</div>
-                    <div class="badge">Badge</div>
-                </div>
-                <div id="leaderboard-entries" class="leaderboard-entries">
-                    <!-- Will be populated by JavaScript -->
-                    <div class="empty-state">
-                        <p>No entries yet. Be the first to complete all labs!</p>
-                    </div>
+            <div class="leaderboard-entries" id="leaderboard-entries">
+                <!-- Leaderboard entries will be dynamically populated here -->
+                <div class="leaderboard-empty" id="leaderboard-empty">
+                    <p>Complete all 50 labs to join the leaderboard!</p>
                 </div>
             </div>
         </div>
@@ -212,66 +88,303 @@
 <!-- About Section -->
 <section id="about" class="about-section">
     <div class="container">
-        <h2 class="section-title">About XSSploit</h2>
+        <div class="section-header">
+            <h2 class="section-title">About XSSploit</h2>
+            <p class="section-description">Learn about cross-site scripting in a safe, educational environment</p>
+        </div>
+        
         <div class="about-content">
-            <div class="about-text">
-                <p>XSSploit is an educational platform designed to help security enthusiasts, developers, and cybersecurity professionals understand and practice Cross-Site Scripting (XSS) vulnerabilities in a safe, controlled environment.</p>
-                <p>Through 50 realistic labs that mimic real-world scenarios, users can develop skills to identify, exploit, and ultimately prevent XSS vulnerabilities in web applications.</p>
-                <p>Created by <strong>Karthik S Sathyan</strong>, this platform serves as a learning resource for ethical hacking and web security education.</p>
-                <div class="about-cta">
-                    <button id="about-start-btn" class="btn btn-primary">Start Learning Now</button>
-                </div>
+            <div class="about-info">
+                <h3>What is XSSploit?</h3>
+                <p>XSSploit is an educational platform designed to help security professionals, developers, and enthusiasts learn about Cross-Site Scripting (XSS) vulnerabilities in a safe, controlled environment.</p>
+                
+                <h3>What will you learn?</h3>
+                <p>Through 50 realistic challenges, you'll learn to:</p>
+                <ul>
+                    <li>Identify different types of XSS vulnerabilities</li>
+                    <li>Understand how XSS attacks work</li>
+                    <li>Exploit vulnerabilities safely and ethically</li>
+                    <li>Implement proper defenses against XSS</li>
+                    <li>Think like attackers to better protect your applications</li>
+                </ul>
+                
+                <h3>Who is this for?</h3>
+                <p>XSSploit is perfect for:</p>
+                <ul>
+                    <li>Web developers looking to build more secure applications</li>
+                    <li>Security professionals practicing their skills</li>
+                    <li>Students learning about web security</li>
+                    <li>Bug bounty hunters honing their XSS detection techniques</li>
+                    <li>Anyone interested in web application security</li>
+                </ul>
             </div>
+            
             <div class="about-features">
-                <div class="feature">
-                    <div class="feature-icon">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <h3>Educational First</h3>
-                    <p>Built specifically for learning XSS concepts through practical application</p>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h4>Safe Environment</h4>
+                    <p>Practice in isolated sandboxes without real-world impact</p>
                 </div>
-                <div class="feature">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Ethical Hacking</h3>
-                    <p>Practice security techniques in a responsible, legal environment</p>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h4>Progressive Learning</h4>
+                    <p>Start with basics and advance to expert-level challenges</p>
                 </div>
-                <div class="feature">
-                    <div class="feature-icon">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <h3>Track Progress</h3>
-                    <p>Monitor your improvement and compete for top leaderboard positions</p>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-code"></i></div>
+                    <h4>Real-world Scenarios</h4>
+                    <p>Based on actual vulnerabilities found in applications</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+                    <h4>Helpful Hints</h4>
+                    <p>Get unstuck with targeted hints for each challenge</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-trophy"></i></div>
+                    <h4>Track Progress</h4>
+                    <p>Monitor your advancement and race to the leaderboard</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-book"></i></div>
+                    <h4>Learn Defenses</h4>
+                    <p>Understand how to fix each vulnerability you discover</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Success Modal -->
-<div id="success-modal" class="modal">
-    <div class="modal-content success-modal">
-        <span class="close">&times;</span>
-        <div class="success-header">
-            <i class="fas fa-check-circle"></i>
-            <h2>Challenge Completed!</h2>
+<!-- Username Modal -->
+<div class="modal" id="username-modal">
+    <div class="modal-content">
+        <h2>Welcome to XSSploit!</h2>
+        <p>Enter your name to track your progress and compete on the leaderboard.</p>
+        <div class="form-group">
+            <input type="text" id="username-input" placeholder="Your name" class="form-control">
         </div>
-        <div class="success-details">
-            <p>You've successfully completed: <span id="completed-lab-title">Lab Title</span></p>
-            <p>Time taken: <span id="completed-lab-time">00:00:00</span></p>
-        </div>
-        <div class="success-actions">
-            <button id="next-lab-btn" class="btn btn-primary">Next Lab</button>
-            <button id="back-to-list-btn" class="btn btn-secondary">Back to List</button>
-        </div>
+        <button id="username-submit" class="button button-primary">Start Training</button>
     </div>
 </div>
-
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/labs.js') }}"></script>
-<script src="{{ url_for('static', filename='js/session.js') }}"></script>
-<script src="{{ url_for('static', filename='js/leaderboard.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch labs data
+    fetch('/api/labs')
+        .then(response => response.json())
+        .then(labs => {
+            // Populate labs in the dashboard
+            displayLabs(labs);
+            
+            // Set up filtering
+            setupFilters(labs);
+        })
+        .catch(error => {
+            console.error('Error fetching labs:', error);
+        });
+    
+    // Check if user has a session
+    const hasSession = localStorage.getItem('xssploit_username');
+    if (!hasSession) {
+        // Show username modal
+        showNameModal();
+    } else {
+        // Update UI with username
+        updateUserDisplay();
+    }
+    
+    // Load leaderboard
+    loadLeaderboard();
+    
+    // Set up event listeners
+    document.getElementById('username-submit').addEventListener('click', function() {
+        const username = document.getElementById('username-input').value.trim();
+        if (username) {
+            localStorage.setItem('xssploit_username', username);
+            document.getElementById('username-modal').style.display = 'none';
+            updateUserDisplay();
+        }
+    });
+});
+
+// Display labs in the dashboard
+function displayLabs(labs) {
+    const container = document.getElementById('lab-cards-container');
+    container.innerHTML = '';
+    
+    // Get user progress
+    const progress = JSON.parse(localStorage.getItem('xssploit_progress') || '{}');
+    
+    // Create lab cards
+    labs.forEach(lab => {
+        const labProgress = progress[lab.id] || { completed: false, time: 0 };
+        
+        const card = document.createElement('div');
+        card.className = `lab-card ${labProgress.completed ? 'completed' : ''}`;
+        card.setAttribute('data-category', lab.category);
+        card.setAttribute('data-difficulty', lab.difficulty);
+        
+        card.innerHTML = `
+            <div class="lab-card-header">
+                <span class="lab-number">${lab.id}</span>
+                <span class="lab-difficulty ${lab.difficulty.toLowerCase()}">${lab.difficulty}</span>
+            </div>
+            <h3 class="lab-card-title">${lab.title}</h3>
+            <div class="lab-card-footer">
+                <span class="lab-category">${lab.category.replace('-', ' ')}</span>
+                ${labProgress.completed ? 
+                    `<span class="lab-completed">Completed in ${formatTime(labProgress.time)}</span>` : 
+                    '<span class="lab-status">Not Completed</span>'}
+            </div>
+        `;
+        
+        // Add click handler to navigate to lab
+        card.addEventListener('click', function() {
+            window.location.href = `/lab/${lab.id}`;
+        });
+        
+        container.appendChild(card);
+    });
+    
+    // Update progress display
+    updateProgressDisplay(labs.length, progress);
+}
+
+// Set up category and difficulty filters
+function setupFilters(labs) {
+    const categoryFilter = document.getElementById('category-filter');
+    const difficultyFilter = document.getElementById('difficulty-filter');
+    
+    // Apply filters when changed
+    categoryFilter.addEventListener('change', applyFilters);
+    difficultyFilter.addEventListener('change', applyFilters);
+    
+    // Initial filter application
+    applyFilters();
+    
+    function applyFilters() {
+        const selectedCategory = categoryFilter.value;
+        const selectedDifficulty = difficultyFilter.value;
+        
+        const labCards = document.querySelectorAll('.lab-card');
+        
+        labCards.forEach(card => {
+            const category = card.getAttribute('data-category');
+            const difficulty = card.getAttribute('data-difficulty');
+            
+            const categoryMatch = selectedCategory === 'all' || category === selectedCategory;
+            const difficultyMatch = selectedDifficulty === 'all' || difficulty === selectedDifficulty;
+            
+            if (categoryMatch && difficultyMatch) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+}
+
+// Update progress display
+function updateProgressDisplay(totalLabs, progress) {
+    const progressDisplay = document.getElementById('progress-display');
+    let completedCount = 0;
+    
+    // Count completed labs
+    Object.values(progress).forEach(labProgress => {
+        if (labProgress.completed) {
+            completedCount++;
+        }
+    });
+    
+    progressDisplay.textContent = `${completedCount}/${totalLabs} labs completed`;
+}
+
+// Load and display leaderboard
+function loadLeaderboard() {
+    const leaderboardEntries = document.getElementById('leaderboard-entries');
+    const leaderboardEmpty = document.getElementById('leaderboard-empty');
+    
+    // Get leaderboard from localStorage
+    const leaderboard = JSON.parse(localStorage.getItem('xssploit_leaderboard') || '[]');
+    
+    if (leaderboard.length > 0) {
+        leaderboardEmpty.style.display = 'none';
+        
+        // Clear existing entries
+        while (leaderboardEntries.firstChild && leaderboardEntries.firstChild !== leaderboardEmpty) {
+            leaderboardEntries.removeChild(leaderboardEntries.firstChild);
+        }
+        
+        // Add entries
+        leaderboard.forEach((entry, index) => {
+            const entryElement = document.createElement('div');
+            entryElement.className = 'leaderboard-entry';
+            
+            const badge = getBadgeForTime(entry.totalTime);
+            
+            entryElement.innerHTML = `
+                <div class="rank-column">${index + 1}</div>
+                <div class="name-column">${escapeHtml(entry.username)}</div>
+                <div class="time-column">${formatTime(entry.totalTime)}</div>
+                <div class="badge-column"><span class="badge ${badge.toLowerCase()}">${badge}</span></div>
+            `;
+            
+            leaderboardEntries.insertBefore(entryElement, leaderboardEmpty);
+        });
+    } else {
+        leaderboardEmpty.style.display = 'block';
+    }
+}
+
+// Get badge level based on completion time
+function getBadgeForTime(time) {
+    // 50 labs, average of 2 minutes per lab = 100 minutes = 6,000,000 ms is "Gold" standard
+    if (time <= 6000000) return 'Gold';
+    // 50 labs, average of 4 minutes per lab = 200 minutes = 12,000,000 ms is "Silver" standard
+    if (time <= 12000000) return 'Silver';
+    // Everyone else gets Bronze
+    return 'Bronze';
+}
+
+// Format time in milliseconds to HH:MM:SS
+function formatTime(ms) {
+    const seconds = Math.floor((ms / 1000) % 60);
+    const minutes = Math.floor((ms / (1000 * 60)) % 60);
+    const hours = Math.floor(ms / (1000 * 60 * 60));
+    
+    return [
+        hours.toString().padStart(2, '0'),
+        minutes.toString().padStart(2, '0'),
+        seconds.toString().padStart(2, '0')
+    ].join(':');
+}
+
+// Show the username modal
+function showNameModal() {
+    document.getElementById('username-modal').style.display = 'flex';
+}
+
+// Update UI with username
+function updateUserDisplay() {
+    const username = localStorage.getItem('xssploit_username');
+    // You can add UI elements here to display the username if needed
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+</script>
 {% endblock %}
