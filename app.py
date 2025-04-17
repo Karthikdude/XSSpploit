@@ -10,6 +10,9 @@ logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "xssploit_default_secret_key")
 
+# Disable automatic HTML escaping to allow XSS vulnerabilities
+app.jinja_env.autoescape = False
+
 # List of all 50 labs with their information
 labs = [
     {
