@@ -1,0 +1,55 @@
+Basic Reflected XSS
+Basic Reflected XSS via Query Parameters
+Reflected XSS via Form Submission
+Reflected XSS in URL Fragments
+Reflected XSS in URL Path Segments
+Reflected XSS via HTTP Referrer Header Reflection
+Reflected XSS via Cookies
+Reflected XSS via User-Agent Header
+Reflected XSS via HTML Tags (e.g., injecting <style> or <script> tags)
+Reflected XSS via Error Messages
+Reflected XSS via Open Redirect
+DOM-based XSS
+DOM-based XSS via innerHTML
+DOM-based XSS via document.write
+DOM-based XSS via eval()
+DOM-based XSS via JavaScript Events (e.g., onclick, onmouseover)
+DOM-based XSS via window.location.href
+DOM-based XSS via document.location
+DOM-based XSS via element.setAttribute()
+DOM-based XSS via Dynamic Event Listeners (addEventListener)
+DOM-based XSS via Misuse of innerText
+DOM-based XSS via JavaScript URI (e.g., javascript:alert(1))
+Advanced Techniques
+XSS via CSP Bypass (e.g., using inline scripts with unsafe CSP rules)
+XSS via JSON Response Reflection
+XSS via JSONP Endpoint (JSON Callbacks)
+XSS via Misconfigured Access-Control-Allow-Origin Header
+XSS via srcdoc Attribute in iframes
+XSS via HTML5 sandbox Attribute Misuse
+XSS via Base64-Encoded Payload Injection
+XSS via SVG Embedded JavaScript
+XSS via Mutation Observers (DOM Mutation-based XSS)
+XSS via Misuse of window.name Attribute
+Filter Bypass Challenges
+XSS Bypass with Blacklisted Tags (<script> blocked)
+XSS Bypass using URL Encoding/Decoding
+XSS Bypass using Double Encoding
+XSS Bypass using Null Bytes Injection (%00)
+XSS Bypass using Case-Insensitive Tags and Attributes
+XSS Bypass with Invalid/Incomplete HTML Tags
+XSS Bypass with Event Handlers (e.g., onerror, onload)
+XSS Bypass via Inline Style Injection (CSS/JavaScript in style tags)
+XSS Bypass via Template Injection (e.g., Flask Jinja2 Template Misuse)
+XSS Bypass using Unescaped Characters in Attributes
+Miscellaneous
+XSS via iframe Injection
+XSS via HTTP Response Splitting
+XSS via HTTP Content-Type Header Reflection
+XSS via Misconfigured Progressive Web App (PWA) Manifest
+XSS via Service Worker Registration
+XSS via Inline Event Handlers in Dynamically Injected Content
+XSS via Template Literals in JavaScript (e.g., ${userInput})
+XSS via CSS Injection in <style> Tags
+XSS via DOM Clobbering (Manipulation of DOM elements with conflicting names)
+XSS via Dynamic Script Source Injection (e.g., injecting src attributes)
