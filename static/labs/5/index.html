@@ -3,89 +3,451 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSS Lab 5</title>
+    <title>VisitorStats - Website Analytics Dashboard</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 2rem;
-            background-color: #f4f7fa;
+            padding: 0;
+            background-color: #f5f7fa;
             color: #333;
             line-height: 1.6;
         }
         
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 2rem;
-            border-radius: 8px;
+        header {
+            background-color: #4a6cf7;
+            color: white;
+            padding: 1rem 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
-        h1 {
-            color: #3c66c4;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-right: 0.5rem;
+            background-color: white;
+            color: #4a6cf7;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #e0e7ff;
+        }
+        
+        .dashboard {
+            padding: 2rem 0;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .dashboard-title {
+            font-size: 1.8rem;
+            margin: 0;
+            color: #333;
+        }
+        
+        .date-range {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .date-range select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stat-title {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            color: #333;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-change {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-change.positive {
+            color: #10b981;
+        }
+        
+        .stat-change.negative {
+            color: #ef4444;
+        }
+        
+        .traffic-sources {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            margin: 0;
+            color: #333;
+        }
+        
+        .source-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .source-table th,
+        .source-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .source-table th {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .source-table tbody tr:hover {
+            background-color: #f9fafb;
+        }
+        
+        .page-views {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .visitor-info {
+            background-color: #e5edff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-left: 4px solid #4a6cf7;
+        }
+        
+        .visitor-info h3 {
             margin-top: 0;
+            color: #4a6cf7;
         }
         
-        p {
-            margin-bottom: 1.5rem;
+        .visitor-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
         }
         
-        .notice {
-            background-color: #fff3cd;
+        .detail-item {
+            background-color: white;
             padding: 1rem;
-            border-left: 4px solid #ffc107;
-            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .detail-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-value {
+            font-weight: 500;
+            word-break: break-all;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>XSS Lab #5</h1>
-        <div class="notice">
-            <p>This is a placeholder for lab #5: Reflected XSS via HTTP Referrer Header Reflection</p>
-            <p>To solve this lab, you'll need to insert code that displays an alert with the text "Xpwned".</p>
+    <header>
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">
+                    <span class="logo-icon">V</span>
+                    VisitorStats
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Analytics</a></li>
+                    <li><a href="#">Reports</a></li>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="#">Help</a></li>
+                </ul>
+            </div>
         </div>
-        
-        <div id="lab-content">
-            <p>Lab content placeholder. For a complete implementation, replace this with the actual lab content.</p>
+    </header>
+
+    <div class="container">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Analytics Dashboard</h1>
+                <div class="date-range">
+                    <span>Time Period:</span>
+                    <select>
+                        <option>Last 24 hours</option>
+                        <option>Last 7 days</option>
+                        <option selected>Last 30 days</option>
+                        <option>Last 90 days</option>
+                        <option>Custom Range</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Total Visitors</div>
+                    <div class="stat-value">12,458</div>
+                    <div class="stat-change positive">+8.2% from last period</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Page Views</div>
+                    <div class="stat-value">35,721</div>
+                    <div class="stat-change positive">+12.5% from last period</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Avg. Session Duration</div>
+                    <div class="stat-value">3:45</div>
+                    <div class="stat-change positive">+0.8% from last period</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Bounce Rate</div>
+                    <div class="stat-value">28.3%</div>
+                    <div class="stat-change negative">+2.1% from last period</div>
+                </div>
+            </div>
+            
+            <div class="traffic-sources">
+                <div class="section-header">
+                    <h2 class="section-title">Traffic Sources</h2>
+                </div>
+                
+                <table class="source-table">
+                    <thead>
+                        <tr>
+                            <th>Source</th>
+                            <th>Visitors</th>
+                            <th>% of Total</th>
+                            <th>Conversion Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody id="referrer-table">
+                        <!-- Table rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="visitor-info">
+                <h3>Your Visitor Information</h3>
+                <p>We use this information to provide personalized analytics:</p>
+                
+                <div class="visitor-details">
+                    <div class="detail-item">
+                        <div class="detail-label">IP Address</div>
+                        <div class="detail-value">192.168.1.1</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Browser</div>
+                        <div class="detail-value" id="user-agent">Chrome 98.0</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Operating System</div>
+                        <div class="detail-value">Windows 10</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Referrer URL</div>
+                        <div class="detail-value" id="referrer-url">Direct Visit</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Minimal success detection script for the lab
-        window.addEventListener('error', function(e) {
-            if (e.message && e.message.includes('Xpwned')) {
-                window.parent.postMessage({
-                    type: 'LAB_COMPLETED',
-                    labId: '5'
-                }, '*');
-            }
-        });
-        
-        // Success detection via DOM mutations
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                    for (let i = 0; i < mutation.addedNodes.length; i++) {
-                        const node = mutation.addedNodes[i];
-                        if (node.nodeType === 1 && node.outerHTML && 
-                            node.outerHTML.includes('alert') && 
-                            node.outerHTML.includes('Xpwned')) {
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the referrer URL from the document object
+            const referrer = document.referrer || 'Direct Visit';
+            
+            // This is the vulnerable part - displaying the referrer without sanitization
+            document.getElementById('referrer-url').innerHTML = referrer;
+            
+            // Populate the traffic sources table
+            const sources = [
+                { name: 'Google', visitors: 5243, percentage: 42.1, conversion: 3.8 },
+                { name: 'Direct', visitors: 3126, percentage: 25.1, conversion: 2.5 },
+                { name: 'Facebook', visitors: 1845, percentage: 14.8, conversion: 1.7 },
+                { name: 'Twitter', visitors: 1012, percentage: 8.1, conversion: 1.2 },
+                { name: 'LinkedIn', visitors: 652, percentage: 5.2, conversion: 2.1 },
+                { name: 'Other', visitors: 580, percentage: 4.7, conversion: 0.9 }
+            ];
+            
+            const tableBody = document.getElementById('referrer-table');
+            sources.forEach(source => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${source.name}</td>
+                    <td>${source.visitors.toLocaleString()}</td>
+                    <td>${source.percentage}%</td>
+                    <td>${source.conversion}%</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Enhanced XSS detection for the lab
+            function checkXSS() {
+                try {
+                    const alerts = document.querySelectorAll('script');
+                    for (let i = 0; i < alerts.length; i++) {
+                        if (alerts[i].textContent.includes('Xpwned')) {
+                            window.parent.postMessage({
+                                type: 'LAB_COMPLETED',
+                                labId: '5'
+                            }, '*');
+                            return;
+                        }
+                    }
+                    
+                    // Also check if alert('Xpwned') has been called
+                    const originalAlert = window.alert;
+                    window.alert = function(message) {
+                        if (message && message.toString().includes('Xpwned')) {
                             window.parent.postMessage({
                                 type: 'LAB_COMPLETED',
                                 labId: '5'
                             }, '*');
                         }
+                        return originalAlert.apply(this, arguments);
+                    };
+                } catch (e) {
+                    // Check if error message contains our success signal
+                    if (e && e.message && e.message.includes('Xpwned')) {
+                        window.parent.postMessage({
+                            type: 'LAB_COMPLETED',
+                            labId: '5'
+                        }, '*');
                     }
                 }
+            }
+            
+            // Run the check immediately
+            checkXSS();
+            
+            // And also set up a MutationObserver to detect DOM changes
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                        for (let i = 0; i < mutation.addedNodes.length; i++) {
+                            const node = mutation.addedNodes[i];
+                            // Check if this contains a script with our marker
+                            if (node.outerHTML && 
+                                (node.outerHTML.includes('alert') || node.outerHTML.includes('script')) && 
+                                node.outerHTML.includes('Xpwned')) {
+                                window.parent.postMessage({
+                                    type: 'LAB_COMPLETED',
+                                    labId: '5'
+                                }, '*');
+                            }
+                        }
+                    }
+                });
+                // Run the check after mutation as well
+                checkXSS();
             });
-        });
-        
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+            // Listen for error events that might contain our marker
+            window.addEventListener('error', function(e) {
+                if (e.message && e.message.includes('Xpwned')) {
+                    window.parent.postMessage({
+                        type: 'LAB_COMPLETED',
+                        labId: '5'
+                    }, '*');
+                }
+            });
         });
     </script>
 </body>

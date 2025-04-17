@@ -3,89 +3,638 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSS Lab 6</title>
+    <title>WebAppSettings - User Preferences</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 2rem;
-            background-color: #f4f7fa;
+            padding: 0;
+            background-color: #f8f9fa;
             color: #333;
             line-height: 1.6;
         }
         
+        header {
+            background-color: #4a4a4a;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .logo span {
+            color: #00d1b2;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #00d1b2;
+        }
+        
+        .main-content {
+            display: flex;
+            padding: 2rem 0;
+        }
+        
+        .sidebar {
+            width: 250px;
             background-color: white;
-            padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-right: 2rem;
+            padding: 1.5rem;
         }
         
-        h1 {
-            color: #3c66c4;
-            margin-top: 0;
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
         
-        p {
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: #e6f7f5;
+            color: #00d1b2;
+        }
+        
+        .sidebar-menu a.active {
+            font-weight: bold;
+            border-left: 3px solid #00d1b2;
+        }
+        
+        .content-area {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
         }
         
-        .notice {
-            background-color: #fff3cd;
+        .content-title {
+            font-size: 1.5rem;
+            margin: 0;
+            color: #333;
+        }
+        
+        .preference-section {
+            margin-bottom: 2rem;
+        }
+        
+        .preference-section h3 {
+            font-size: 1.2rem;
+            color: #00d1b2;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .preference-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"],
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+        }
+        
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .button-primary {
+            background-color: #00d1b2;
+            color: white;
+        }
+        
+        .button-primary:hover {
+            background-color: #00c4a7;
+        }
+        
+        .button-secondary {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .button-secondary:hover {
+            background-color: #e8e8e8;
+        }
+        
+        .notification {
             padding: 1rem;
-            border-left: 4px solid #ffc107;
             margin-bottom: 1.5rem;
+            border-radius: 4px;
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .saved-preferences {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .saved-preferences h3 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .preference-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .preference-item:last-child {
+            border-bottom: none;
+        }
+        
+        .preference-name {
+            font-weight: 500;
+        }
+        
+        .preference-value {
+            color: #666;
+        }
+        
+        .language-options {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .theme-options {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .theme-preview {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+        
+        .theme-preview.light {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+        }
+        
+        .theme-preview.dark {
+            background-color: #343a40;
+            border: 1px solid #343a40;
+        }
+        
+        .theme-preview.blue {
+            background-color: #e7f5ff;
+            border: 1px solid #bfdeff;
+        }
+        
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .cookie-message {
+            flex: 1;
+            margin-right: 1rem;
+        }
+        
+        .cookie-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .cookie-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .accept-button {
+            background-color: #00d1b2;
+            color: white;
+        }
+        
+        .settings-button {
+            background-color: transparent;
+            color: white;
+            border: 1px solid white;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>XSS Lab #6</h1>
-        <div class="notice">
-            <p>This is a placeholder for lab #6: Reflected XSS via Cookies</p>
-            <p>To solve this lab, you'll need to insert code that displays an alert with the text "Xpwned".</p>
+    <header>
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">WebApp<span>Settings</span></div>
+                <ul class="nav-links">
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Profile</a></li>
+                    <li><a href="#" class="active">Settings</a></li>
+                    <li><a href="#">Help</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </div>
         </div>
-        
-        <div id="lab-content">
-            <p>Lab content placeholder. For a complete implementation, replace this with the actual lab content.</p>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="active">Preferences</a></li>
+                    <li><a href="#">Account</a></li>
+                    <li><a href="#">Notifications</a></li>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Security</a></li>
+                    <li><a href="#">Integrations</a></li>
+                    <li><a href="#">Billing</a></li>
+                </ul>
+            </div>
+            
+            <div class="content-area">
+                <div class="content-header">
+                    <h2 class="content-title">User Preferences</h2>
+                </div>
+                
+                <div class="notification">
+                    <div id="cookie-message">Your preferences have been saved successfully!</div>
+                </div>
+                
+                <div class="preference-section">
+                    <h3>Interface Settings</h3>
+                    <div class="preference-form">
+                        <div class="form-group">
+                            <label for="theme">Theme</label>
+                            <select id="theme" name="theme">
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                                <option value="blue">Blue</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="font-size">Font Size</label>
+                            <select id="font-size" name="font-size">
+                                <option value="small">Small</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="large">Large</option>
+                                <option value="extra-large">Extra Large</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Language</label>
+                            <div class="language-options">
+                                <div class="language-option">
+                                    <input type="radio" id="lang-en" name="language" value="en" checked>
+                                    <label for="lang-en">English</label>
+                                </div>
+                                <div class="language-option">
+                                    <input type="radio" id="lang-es" name="language" value="es">
+                                    <label for="lang-es">Spanish</label>
+                                </div>
+                                <div class="language-option">
+                                    <input type="radio" id="lang-fr" name="language" value="fr">
+                                    <label for="lang-fr">French</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="timezone">Time Zone</label>
+                            <select id="timezone" name="timezone">
+                                <option value="UTC-8">Pacific Time (UTC-8)</option>
+                                <option value="UTC-7">Mountain Time (UTC-7)</option>
+                                <option value="UTC-6">Central Time (UTC-6)</option>
+                                <option value="UTC-5" selected>Eastern Time (UTC-5)</option>
+                                <option value="UTC">UTC</option>
+                                <option value="UTC+1">Central European Time (UTC+1)</option>
+                                <option value="UTC+8">China Standard Time (UTC+8)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="preference-section">
+                    <h3>Notification Preferences</h3>
+                    <div class="preference-form">
+                        <div class="form-group">
+                            <label>Email Notifications</label>
+                            <div class="checkbox-group">
+                                <div>
+                                    <input type="checkbox" id="email-updates" name="email-updates" checked>
+                                    <label for="email-updates">Product Updates</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="email-security" name="email-security" checked>
+                                    <label for="email-security">Security Alerts</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="email-marketing" name="email-marketing">
+                                    <label for="email-marketing">Marketing</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Browser Notifications</label>
+                            <div class="checkbox-group">
+                                <div>
+                                    <input type="checkbox" id="browser-activity" name="browser-activity" checked>
+                                    <label for="browser-activity">Account Activity</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="browser-alerts" name="browser-alerts" checked>
+                                    <label for="browser-alerts">System Alerts</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="button button-secondary">Reset to Default</button>
+                            <button type="button" class="button button-primary" id="save-preferences">Save Preferences</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="saved-preferences">
+                    <h3>Current Preference Values</h3>
+                    <div id="current-preferences">
+                        <!-- This section will be populated with the current preferences from cookies -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Minimal success detection script for the lab
-        window.addEventListener('error', function(e) {
-            if (e.message && e.message.includes('Xpwned')) {
-                window.parent.postMessage({
-                    type: 'LAB_COMPLETED',
-                    labId: '6'
-                }, '*');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the save button and add click handler
+            const saveButton = document.getElementById('save-preferences');
+            saveButton.addEventListener('click', savePreferences);
+            
+            // Display current preferences from cookies
+            displayCurrentPreferences();
+            
+            // Enhanced XSS detection for the lab
+            setupXSSDetection();
+            
+            // Function to save preferences to cookies
+            function savePreferences() {
+                // Get form values
+                const theme = document.getElementById('theme').value;
+                const fontSize = document.getElementById('font-size').value;
+                const timezone = document.getElementById('timezone').value;
+                
+                // Get selected language
+                const languageInputs = document.querySelectorAll('input[name="language"]');
+                let selectedLanguage;
+                languageInputs.forEach(input => {
+                    if (input.checked) {
+                        selectedLanguage = input.value;
+                    }
+                });
+                
+                // Create cookie string with preferences
+                const preferences = {
+                    theme,
+                    fontSize,
+                    language: selectedLanguage,
+                    timezone,
+                    lastUpdated: new Date().toISOString()
+                };
+                
+                // Set the cookie with the preferences JSON
+                document.cookie = `userPreferences=${JSON.stringify(preferences)}; path=/`;
+                
+                // Show success message
+                const notification = document.querySelector('.notification');
+                notification.style.display = 'block';
+                
+                // Update displayed preferences
+                displayCurrentPreferences();
             }
-        });
-        
-        // Success detection via DOM mutations
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                    for (let i = 0; i < mutation.addedNodes.length; i++) {
-                        const node = mutation.addedNodes[i];
-                        if (node.nodeType === 1 && node.outerHTML && 
-                            node.outerHTML.includes('alert') && 
-                            node.outerHTML.includes('Xpwned')) {
-                            window.parent.postMessage({
-                                type: 'LAB_COMPLETED',
-                                labId: '6'
-                            }, '*');
-                        }
+            
+            // Function to get cookie by name
+            function getCookie(name) {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Check if this cookie starts with the name we want
+                    if (cookie.indexOf(name + '=') === 0) {
+                        return cookie.substring(name.length + 1);
                     }
                 }
-            });
-        });
-        
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
+                return null;
+            }
+            
+            // Function to display current preferences from cookies
+            function displayCurrentPreferences() {
+                const preferencesContainer = document.getElementById('current-preferences');
+                const preferencesCookie = getCookie('userPreferences');
+                
+                if (preferencesCookie) {
+                    try {
+                        // This is the vulnerable part - directly using innerHTML with the cookie value
+                        preferencesContainer.innerHTML = '';
+                        
+                        const preferences = JSON.parse(preferencesCookie);
+                        
+                        // Display each preference item
+                        for (const [key, value] of Object.entries(preferences)) {
+                            const item = document.createElement('div');
+                            item.className = 'preference-item';
+                            
+                            // Create the preference name element
+                            const nameEl = document.createElement('div');
+                            nameEl.className = 'preference-name';
+                            nameEl.textContent = formatPreferenceName(key);
+                            
+                            // Create the preference value element - this has the XSS vulnerability
+                            const valueEl = document.createElement('div');
+                            valueEl.className = 'preference-value';
+                            valueEl.innerHTML = value; // <-- Vulnerable! Using innerHTML with user-controlled data
+                            
+                            item.appendChild(nameEl);
+                            item.appendChild(valueEl);
+                            preferencesContainer.appendChild(item);
+                        }
+                    } catch (e) {
+                        preferencesContainer.innerHTML = '<p>Error parsing preferences</p>';
+                    }
+                } else {
+                    preferencesContainer.innerHTML = '<p>No preferences saved yet</p>';
+                }
+            }
+            
+            // Helper function to format preference names for display
+            function formatPreferenceName(name) {
+                return name
+                    .split(/(?=[A-Z])/)
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+            }
+            
+            // Set up XSS detection for the lab
+            function setupXSSDetection() {
+                // Override alert function to detect successful XSS
+                const originalAlert = window.alert;
+                window.alert = function(message) {
+                    if (message && message.toString().includes('Xpwned')) {
+                        window.parent.postMessage({
+                            type: 'LAB_COMPLETED',
+                            labId: '6'
+                        }, '*');
+                    }
+                    return originalAlert.apply(this, arguments);
+                };
+                
+                // Set up MutationObserver to detect successful XSS through DOM changes
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                            for (let i = 0; i < mutation.addedNodes.length; i++) {
+                                const node = mutation.addedNodes[i];
+                                if (node.nodeType === 1 && node.outerHTML && 
+                                    (node.outerHTML.includes('alert') || node.outerHTML.includes('script')) && 
+                                    node.outerHTML.includes('Xpwned')) {
+                                    window.parent.postMessage({
+                                        type: 'LAB_COMPLETED',
+                                        labId: '6'
+                                    }, '*');
+                                }
+                            }
+                        }
+                    });
+                });
+                
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+                
+                // Listen for error events that might contain our marker
+                window.addEventListener('error', function(e) {
+                    if (e.message && e.message.includes('Xpwned')) {
+                        window.parent.postMessage({
+                            type: 'LAB_COMPLETED',
+                            labId: '6'
+                        }, '*');
+                    }
+                });
+            }
         });
     </script>
 </body>

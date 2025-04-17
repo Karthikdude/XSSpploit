@@ -3,89 +3,668 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSS Lab 7</title>
+    <title>BrowserInfo - Your Device Details</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 2rem;
-            background-color: #f4f7fa;
+            padding: 0;
+            background-color: #f0f4f8;
             color: #333;
             line-height: 1.6;
         }
         
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-right: 0.5rem;
+            color: #3498db;
+            font-size: 1.8rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #3498db;
+        }
+        
+        .hero {
+            background-color: #3498db;
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .browser-info {
+            padding: 3rem 0;
+        }
+        
+        .info-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .info-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .info-description {
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .info-card {
             background-color: white;
-            padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
         
-        h1 {
-            color: #3c66c4;
-            margin-top: 0;
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
         
-        p {
+        .card-header {
+            background-color: #f5f7fa;
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-icon {
+            margin-right: 0.5rem;
+            color: #3498db;
+            font-size: 1.2rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .info-value {
+            color: #333;
+            word-break: break-all;
+        }
+        
+        .feature-section {
+            background-color: #f8f9fa;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .feature-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-description {
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature {
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #3498db;
             margin-bottom: 1.5rem;
         }
         
-        .notice {
-            background-color: #fff3cd;
-            padding: 1rem;
-            border-left: 4px solid #ffc107;
+        .feature h3 {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .feature p {
+            color: #666;
+        }
+        
+        .cta-section {
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .cta-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-description {
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .button:hover {
+            background-color: #2980b9;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 3rem 0 1.5rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
             margin-bottom: 1.5rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid #3a4c5f;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .info-cards, .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-section {
+                flex: 0 0 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>XSS Lab #7</h1>
-        <div class="notice">
-            <p>This is a placeholder for lab #7: Reflected XSS via User-Agent Header</p>
-            <p>To solve this lab, you'll need to insert code that displays an alert with the text "Xpwned".</p>
+    <header>
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">
+                    <span class="logo-icon">〈〉</span>
+                    BrowserInfo
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Tools</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
         </div>
-        
-        <div id="lab-content">
-            <p>Lab content placeholder. For a complete implementation, replace this with the actual lab content.</p>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">Understand Your Browser Environment</h1>
+            <p class="hero-subtitle">Comprehensive details about your device, browser, and connection in one place</p>
+            <a href="#browser-info" class="button">View My Info</a>
         </div>
-    </div>
+    </section>
+
+    <section id="browser-info" class="browser-info">
+        <div class="container">
+            <div class="info-header">
+                <h2 class="info-title">Your Browser Information</h2>
+                <p class="info-description">Below is detailed information about your browser environment, gathered from your current session. This information is only displayed locally and is not stored on our servers.</p>
+            </div>
+            
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">🌐</span>
+                            Browser Details
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <div class="info-label">User Agent</div>
+                            <div class="info-value" id="user-agent">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Browser Name</div>
+                            <div class="info-value" id="browser-name">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Browser Version</div>
+                            <div class="info-value" id="browser-version">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Cookies Enabled</div>
+                            <div class="info-value" id="cookies-enabled">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">JavaScript Enabled</div>
+                            <div class="info-value">Yes</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">💻</span>
+                            Device Information
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <div class="info-label">Operating System</div>
+                            <div class="info-value" id="operating-system">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Platform</div>
+                            <div class="info-value" id="platform">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Screen Resolution</div>
+                            <div class="info-value" id="screen-resolution">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Window Size</div>
+                            <div class="info-value" id="window-size">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Device Pixel Ratio</div>
+                            <div class="info-value" id="pixel-ratio">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">🔒</span>
+                            Connection Information
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <div class="info-label">Current URL</div>
+                            <div class="info-value" id="current-url">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Referrer</div>
+                            <div class="info-value" id="referrer">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Protocol</div>
+                            <div class="info-value" id="protocol">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Connection Type</div>
+                            <div class="info-value" id="connection-type">Unknown</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Connection Speed</div>
+                            <div class="info-value" id="connection-speed">Unknown</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">🧩</span>
+                            Browser Features
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <div class="info-label">WebGL Support</div>
+                            <div class="info-value" id="webgl-support">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Canvas Support</div>
+                            <div class="info-value" id="canvas-support">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">WebAssembly Support</div>
+                            <div class="info-value" id="wasm-support">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">LocalStorage Support</div>
+                            <div class="info-value" id="localstorage-support">Loading...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Service Worker Support</div>
+                            <div class="info-value" id="sw-support">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BrowserInfo</h3>
+                    <p>A free tool to view and analyze your browser information and device details.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Tools</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">GitHub</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 BrowserInfo. All rights reserved.
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // Minimal success detection script for the lab
-        window.addEventListener('error', function(e) {
-            if (e.message && e.message.includes('Xpwned')) {
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get user agent and display it (this is the vulnerable part)
+            const userAgent = navigator.userAgent;
+            document.getElementById('user-agent').innerHTML = userAgent; // Vulnerable to XSS!
+            
+            // Parse browser information
+            let browserName = "Unknown";
+            let browserVersion = "Unknown";
+            let operatingSystem = "Unknown";
+            
+            // Check for common browsers
+            if (userAgent.indexOf("Firefox") > -1) {
+                browserName = "Mozilla Firefox";
+                browserVersion = userAgent.match(/Firefox\/([0-9.]+)/)[1];
+            } else if (userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Edg") === -1 && userAgent.indexOf("OPR") === -1) {
+                browserName = "Google Chrome";
+                browserVersion = userAgent.match(/Chrome\/([0-9.]+)/)[1];
+            } else if (userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") === -1) {
+                browserName = "Safari";
+                browserVersion = userAgent.match(/Version\/([0-9.]+)/)[1];
+            } else if (userAgent.indexOf("Edg") > -1) {
+                browserName = "Microsoft Edge";
+                browserVersion = userAgent.match(/Edg\/([0-9.]+)/)[1];
+            } else if (userAgent.indexOf("OPR") > -1 || userAgent.indexOf("Opera") > -1) {
+                browserName = "Opera";
+                browserVersion = userAgent.match(/(?:OPR|Opera)\/([0-9.]+)/)[1];
+            } else if (userAgent.indexOf("Trident") > -1) {
+                browserName = "Internet Explorer";
+                browserVersion = userAgent.match(/rv:([0-9.]+)/)[1];
+            }
+            
+            // Check operating system
+            if (userAgent.indexOf("Windows") > -1) {
+                operatingSystem = "Windows";
+                if (userAgent.indexOf("Windows NT 10.0") > -1) operatingSystem += " 10";
+                else if (userAgent.indexOf("Windows NT 6.3") > -1) operatingSystem += " 8.1";
+                else if (userAgent.indexOf("Windows NT 6.2") > -1) operatingSystem += " 8";
+                else if (userAgent.indexOf("Windows NT 6.1") > -1) operatingSystem += " 7";
+            } else if (userAgent.indexOf("Mac") > -1) {
+                operatingSystem = "macOS";
+            } else if (userAgent.indexOf("Linux") > -1) {
+                operatingSystem = "Linux";
+            } else if (userAgent.indexOf("Android") > -1) {
+                operatingSystem = "Android";
+            } else if (userAgent.indexOf("iOS") > -1 || userAgent.indexOf("iPhone") > -1 || userAgent.indexOf("iPad") > -1) {
+                operatingSystem = "iOS";
+            }
+            
+            // Update the UI
+            document.getElementById('browser-name').textContent = browserName;
+            document.getElementById('browser-version').textContent = browserVersion;
+            document.getElementById('operating-system').textContent = operatingSystem;
+            document.getElementById('platform').textContent = navigator.platform;
+            document.getElementById('cookies-enabled').textContent = navigator.cookieEnabled ? "Yes" : "No";
+            document.getElementById('screen-resolution').textContent = `${screen.width} x ${screen.height}`;
+            document.getElementById('window-size').textContent = `${window.innerWidth} x ${window.innerHeight}`;
+            document.getElementById('pixel-ratio').textContent = window.devicePixelRatio;
+            document.getElementById('current-url').textContent = window.location.href;
+            document.getElementById('referrer').textContent = document.referrer || "Direct";
+            document.getElementById('protocol').textContent = window.location.protocol;
+            
+            // Check for feature support
+            document.getElementById('webgl-support').textContent = 
+                !!window.WebGLRenderingContext ? "Yes" : "No";
+            document.getElementById('canvas-support').textContent = 
+                !!document.createElement('canvas').getContext ? "Yes" : "No";
+            document.getElementById('wasm-support').textContent = 
+                (typeof WebAssembly === 'object') ? "Yes" : "No";
+            document.getElementById('localstorage-support').textContent = 
+                !!window.localStorage ? "Yes" : "No";
+            document.getElementById('sw-support').textContent = 
+                ('serviceWorker' in navigator) ? "Yes" : "No";
+            
+            // Try to get connection information if available
+            if ('connection' in navigator) {
+                const connection = navigator.connection;
+                document.getElementById('connection-type').textContent = connection.effectiveType || "Unknown";
+                document.getElementById('connection-speed').textContent = 
+                    connection.downlink ? `${connection.downlink} Mbps` : "Unknown";
+            }
+            
+            // XSS Detection for Lab
+            function checkXssSuccess() {
+                try {
+                    // Check for specific elements that might indicate successful XSS
+                    const scriptTags = document.querySelectorAll('script');
+                    for (let i = 0; i < scriptTags.length; i++) {
+                        if (scriptTags[i].innerText && scriptTags[i].innerText.includes('Xpwned')) {
+                            labCompleted();
+                            return;
+                        }
+                    }
+                    
+                    // Override alert function
+                    window.alert = function(message) {
+                        if (message && message.toString().includes('Xpwned')) {
+                            labCompleted();
+                        }
+                        // Don't actually show the alert in the lab environment
+                        console.log("[Alert intercepted]:", message);
+                    };
+                } catch (e) {
+                    // If we get an error with the string "Xpwned", that's also success
+                    if (e.toString().includes('Xpwned')) {
+                        labCompleted();
+                    }
+                }
+            }
+            
+            function labCompleted() {
                 window.parent.postMessage({
                     type: 'LAB_COMPLETED',
                     labId: '7'
                 }, '*');
             }
-        });
-        
-        // Success detection via DOM mutations
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                    for (let i = 0; i < mutation.addedNodes.length; i++) {
-                        const node = mutation.addedNodes[i];
-                        if (node.nodeType === 1 && node.outerHTML && 
-                            node.outerHTML.includes('alert') && 
-                            node.outerHTML.includes('Xpwned')) {
-                            window.parent.postMessage({
-                                type: 'LAB_COMPLETED',
-                                labId: '7'
-                            }, '*');
+            
+            // Run initial check
+            checkXssSuccess();
+            
+            // Set up mutation observer to detect DOM changes
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                        for (let i = 0; i < mutation.addedNodes.length; i++) {
+                            const node = mutation.addedNodes[i];
+                            if (node.nodeType === 1 && node.outerHTML && 
+                                (node.outerHTML.includes('alert') || node.outerHTML.includes('script')) && 
+                                node.outerHTML.includes('Xpwned')) {
+                                labCompleted();
+                            }
                         }
                     }
+                });
+                
+                // Also run the check after DOM mutations
+                checkXssSuccess();
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+            // Listen for error events
+            window.addEventListener('error', function(e) {
+                if (e.message && e.message.includes('Xpwned')) {
+                    labCompleted();
                 }
             });
-        });
-        
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
         });
     </script>
 </body>
